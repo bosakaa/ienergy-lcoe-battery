@@ -17,7 +17,10 @@
             background-color: #ffffff;
             border: 1px solid #d0d0d0;
         }
-        .input-group { margin-bottom: 1rem; }
+        .input-group { 
+            margin-bottom: 1rem;
+            position: relative;
+        }
         .input-label { display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: 400; color: #333; font-size: 14px;}
         .input-field, .select-field {
             width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #8a8a8a;
@@ -29,7 +32,7 @@
         .unit { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: #555; pointer-events: none; }
         .result-table { width: 100%; border-collapse: collapse; }
         .result-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #e0e0e0; }
-        .result-table td:first-child { font-weight: 400; color: #333; display: flex; align-items: center;}
+        .result-table td:first-child { font-weight: 400; color: #333; display: flex; align-items: center; position: relative;}
         .result-table td:last-child { font-weight: 600; text-align: right; color: #000; }
         .result-table tr:last-child td { border-bottom: none; }
         
@@ -41,19 +44,39 @@
         .win-button-primary { background-color: #0078d4; border-color: #005a9e; color: #fff; }
         .win-button-primary:hover { background-color: #106ebe; border-color: #005a9e; }
 
-        .tooltip-container { position: relative; display: inline-block; margin-left: 8px; }
-        .tooltip-icon {
-            width: 16px; height: 16px; border-radius: 50%; background-color: #777;
-            color: white; font-size: 12px; font-weight: bold; display: flex;
-            align-items: center; justify-content: center; cursor: help;
-        }
         .tooltip-text {
             visibility: hidden; width: 280px; background-color: #333; color: #fff;
             text-align: left; border-radius: 2px; padding: 8px; position: absolute;
-            z-index: 10; bottom: 125%; left: 50%; margin-left: -140px; opacity: 0;
-            transition: opacity 0.3s; font-size: 12px; font-weight: 400;
+            z-index: 10;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px; font-weight: 400;
+            pointer-events: none; /* Make tooltip non-interactive */
         }
-        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #333 transparent;
+        }
+
+        .input-group:hover .tooltip-text,
+        .input-field:focus ~ .tooltip-text,
+        .select-field:focus ~ .tooltip-text,
+        .result-table td:first-child:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0.4s;
+        }
+
 
         #side-menu {
             transition: transform 0.3s ease-in-out;
@@ -134,7 +157,7 @@
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2" data-lang-key="techParams">Технічні параметри</h2>
                         <div class="input-group">
-                            <label for="batteryType" class="input-label" data-lang-key="batteryType">Тип батареї <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_batteryType">Оберіть хімію акумулятора. Це автоматично оновить типові значення ККД та деградації.</span></span></label>
+                            <label for="batteryType" class="input-label" data-lang-key="batteryType">Тип батареї</label>
                             <select id="batteryType" class="select-field">
                                 <option value="nmc" data-lang-key="option_nmc">NMC (Збалансований)</option>
                                 <option value="lfp" data-lang-key="option_lfp">LFP (Довговічний)</option>
@@ -142,76 +165,141 @@
                                 <option value="li-ion" data-lang-key="option_liion">Li-ion (Високий ресурс)</option>
                                 <option value="na-ion" data-lang-key="option_naion">Na-ion (Перспективний)</option>
                             </select>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_batteryType">Оберіть хімію акумулятора. Це автоматично оновить типові значення ККД та деградації.</span>
                         </div>
                         <div class="input-group">
-                            <label for="systemPower" class="input-label" data-lang-key="systemPower">Потужність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_systemPower">Максимальна потужність, з якою система може заряджатися/розряджатися.<br><br>Типовий діапазон: 50 - 100 МВт.</span></span></label>
-                            <div class="relative"><input type="number" id="systemPower" class="input-field pr-14" value="50"><span class="unit">МВт</span></div>
+                            <label for="systemPower" class="input-label" data-lang-key="systemPower">Потужність системи</label>
+                            <div class="relative">
+                                <input type="number" id="systemPower" class="input-field pr-14" value="50">
+                                <span class="unit">МВт</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_systemPower">Максимальна потужність, з якою система може заряджатися/розряджатися.<br><br>Типовий діапазон: 50 - 100 МВт.</span>
                         </div>
                         <div class="input-group">
-                            <label for="systemCapacity" class="input-label" data-lang-key="systemCapacity">Ємність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_systemCapacity">Загальна кількість енергії, яку може зберігати батарея.<br><br>Типовий діапазон: 200 - 400 МВт·год (для 4-годинних систем).</span></span></label>
-                            <div class="relative"><input type="number" id="systemCapacity" class="input-field pr-20" value="200"><span class="unit">МВт·год</span></div>
+                            <label for="systemCapacity" class="input-label" data-lang-key="systemCapacity">Ємність системи</label>
+                            <div class="relative">
+                                <input type="number" id="systemCapacity" class="input-field pr-20" value="200">
+                                <span class="unit">МВт·год</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_systemCapacity">Загальна кількість енергії, яку може зберігати батарея.<br><br>Типовий діапазон: 200 - 400 МВт·год (для 4-годинних систем).</span>
                         </div>
                         <div class="input-group">
-                            <label for="rte" class="input-label" data-lang-key="rte">ККД повного циклу (RTE) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_rte">Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку.<br><br>Типовий діапазон: 88% - 91%.</span></span></label>
-                            <div class="relative"><input type="number" id="rte" class="input-field pr-12" value="88"><span class="unit">%</span></div>
+                            <label for="rte" class="input-label" data-lang-key="rte">ККД повного циклу (RTE)</label>
+                            <div class="relative">
+                                <input type="number" id="rte" class="input-field pr-12" value="88">
+                                <span class="unit">%</span>
+                            </div>
+                             <span class="tooltip-text" data-lang-key-html="tooltip_rte">Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку.<br><br>Типовий діапазон: 88% - 91%.</span>
                         </div>
                         <div class="input-group">
-                            <label for="dod" class="input-label" data-lang-key="dod">Глибина розряду (DoD) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_dod">Відсоток від повної ємності, що використовується в кожному циклі.<br><br>Типове значення: 90%.</span></span></label>
-                            <div class="relative"><input type="number" id="dod" class="input-field pr-12" value="90"><span class="unit">%</span></div>
+                            <label for="dod" class="input-label" data-lang-key="dod">Глибина розряду (DoD)</label>
+                            <div class="relative">
+                                <input type="number" id="dod" class="input-field pr-12" value="90">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_dod">Відсоток від повної ємності, що використовується в кожному циклі.<br><br>Типове значення: 90%.</span>
                         </div>
                         <div class="input-group">
-                            <label for="cyclesPerYear" class="input-label" data-lang-key="cyclesPerYear">Кількість циклів на рік <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_cyclesPerYear">Очікувана кількість повних циклів заряду-розряду протягом року.<br><br>Типове значення: 350.</span></span></label>
-                            <div class="relative"><input type="number" id="cyclesPerYear" class="input-field pr-20" value="350"><span class="unit" data-lang-key="unit_cycles">циклів</span></div>
+                            <label for="cyclesPerYear" class="input-label" data-lang-key="cyclesPerYear">Кількість циклів на рік</label>
+                            <div class="relative">
+                                <input type="number" id="cyclesPerYear" class="input-field pr-20" value="350">
+                                <span class="unit" data-lang-key="unit_cycles">циклів</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_cyclesPerYear">Очікувана кількість повних циклів заряду-розряду протягом року.<br><br>Типове значення: 350.</span>
                         </div>
                          <div class="input-group">
-                            <label for="degradationRate" class="input-label" data-lang-key="degradationRate">Річна деградація ємності <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_degradationRate">Відсоток втрати максимальної ємності батареї щороку через зношення.<br><br>Типове значення: ~2.6%.</span></span></label>
-                            <div class="relative"><input type="number" id="degradationRate" class="input-field pr-12" value="1.5"><span class="unit">%</span></div>
+                            <label for="degradationRate" class="input-label" data-lang-key="degradationRate">Річна деградація ємності</label>
+                            <div class="relative">
+                                <input type="number" id="degradationRate" class="input-field pr-12" value="1.5">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_degradationRate">Відсоток втрати максимальної ємності батареї щороку через зношення.<br><br>Типове значення: ~2.6%.</span>
                         </div>
                     </section>
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2" data-lang-key="costParams">Параметри витрат</h2>
                         <div class="input-group">
-                            <label for="capex" class="input-label" data-lang-key="capex">Капітальні витрати (CAPEX) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_capex">Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію.<br><br>Типовий діапазон (storage): $249 - $421/кВт·год.</span></span></label>
-                            <div class="relative"><input type="number" id="capex" class="input-field pr-24" value="350"><span class="unit">$/кВт·год</span></div>
+                            <label for="capex" class="input-label" data-lang-key="capex">Капітальні витрати (CAPEX)</label>
+                            <div class="relative">
+                                <input type="number" id="capex" class="input-field pr-24" value="350">
+                                <span class="unit">$/кВт·год</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_capex">Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію.<br><br>Типовий діапазон (storage): $249 - $421/кВт·год.</span>
                         </div>
                         <div class="input-group">
-                            <label for="omCost" class="input-label" data-lang-key="omCost">Фіксовані витрати на O&M <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_omCost">Щорічні витрати на обслуговування, моніторинг та страхування.<br><br>Типовий діапазон (PV): $11 - $14/кВт-рік.</span></span></label>
-                            <div class="relative"><input type="number" id="omCost" class="input-field pr-24" value="12"><span class="unit">$/кВт-рік</span></div>
+                            <label for="omCost" class="input-label" data-lang-key="omCost">Фіксовані витрати на O&M</label>
+                            <div class="relative">
+                                <input type="number" id="omCost" class="input-field pr-24" value="12">
+                                <span class="unit">$/кВт-рік</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_omCost">Щорічні витрати на обслуговування, моніторинг та страхування.<br><br>Типовий діапазон (PV): $11 - $14/кВт-рік.</span>
                         </div>
                         <div class="input-group">
-                            <label for="chargingCost" class="input-label" data-lang-key="chargingCost">Вартість енергії для зарядки <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_chargingCost">Середня ціна, за якою система купує електроенергію з мережі для зарядки.<br><br>Типове значення (standalone): ~$51/МВт·год.</span></span></label>
-                            <div class="relative"><input type="number" id="chargingCost" class="input-field pr-24" value="40"><span class="unit">$/МВт·год</span></div>
+                            <label for="chargingCost" class="input-label" data-lang-key="chargingCost">Вартість енергії для зарядки</label>
+                            <div class="relative">
+                                <input type="number" id="chargingCost" class="input-field pr-24" value="40">
+                                <span class="unit">$/МВт·год</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_chargingCost">Середня ціна, за якою система купує електроенергію з мережі для зарядки.<br><br>Типове значення (standalone): ~$51/МВт·год.</span>
                         </div>
                         <div class="input-group">
-                            <label for="replacementCost" class="input-label" data-lang-key="replacementCost">Вартість заміни <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_replacementCost">Вартість заміни акумуляторного блоку у відсотках від початкових капітальних витрат.</span></span></label>
-                             <div class="relative"><input type="number" id="replacementCost" class="input-field pr-24" value="60"><span class="unit" data-lang-key="unit_ofCapex">% від CAPEX</span></div>
+                            <label for="replacementCost" class="input-label" data-lang-key="replacementCost">Вартість заміни</label>
+                             <div class="relative">
+                                <input type="number" id="replacementCost" class="input-field pr-24" value="60">
+                                <span class="unit" data-lang-key="unit_ofCapex">% від CAPEX</span>
+                             </div>
+                             <span class="tooltip-text" data-lang-key-html="tooltip_replacementCost">Вартість заміни акумуляторного блоку у відсотках від початкових капітальних витрат.</span>
                         </div>
                         <div class="input-group">
-                            <label for="replacementYear" class="input-label" data-lang-key="replacementYear">Рік заміни <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_replacementYear">Рік, у якому планується провести повну заміну акумуляторних модулів. Модель Lazard використовує "аугментацію" замість повної заміни.</span></span></label>
-                            <div class="relative"><input type="number" id="replacementYear" class="input-field pr-14" value="12"><span class="unit" data-lang-key="unit_year">Рік</span></div>
+                            <label for="replacementYear" class="input-label" data-lang-key="replacementYear">Рік заміни</label>
+                            <div class="relative">
+                                <input type="number" id="replacementYear" class="input-field pr-14" value="12">
+                                <span class="unit" data-lang-key="unit_year">Рік</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_replacementYear">Рік, у якому планується провести повну заміну акумуляторних модулів. Модель Lazard використовує "аугментацію" замість повної заміни.</span>
                         </div>
                     </section>
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2" data-lang-key="finParams">Фінансові параметри</h2>
                         <div class="input-group">
-                            <label for="ppaPrice" class="input-label" data-lang-key="ppaPrice">Ціна продажу (PPA), Рік 1 <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_ppaPrice">Ціна, за якою система продає 1 МВт·год енергії в перший рік роботи.</span></span></label>
-                            <div class="relative"><input type="number" id="ppaPrice" class="input-field pr-24" value="200"><span class="unit">$/МВт·год</span></div>
+                            <label for="ppaPrice" class="input-label" data-lang-key="ppaPrice">Ціна продажу (PPA), Рік 1</label>
+                            <div class="relative">
+                                <input type="number" id="ppaPrice" class="input-field pr-24" value="200">
+                                <span class="unit">$/МВт·год</span>
+                            </div>
+                             <span class="tooltip-text" data-lang-key-html="tooltip_ppaPrice">Ціна, за якою система продає 1 МВт·год енергії в перший рік роботи.</span>
                         </div>
                         <div class="input-group">
-                            <label for="ppaEscalation" class="input-label" data-lang-key="ppaEscalation">Індексація PPA <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_ppaEscalation">Щорічне зростання ціни продажу енергії (PPA) для врахування інфляції або ринкових умов.</span></span></label>
-                            <div class="relative"><input type="number" id="ppaEscalation" class="input-field pr-16" value="2"><span class="unit" data-lang-key="unit_perYear">% / рік</span></div>
+                            <label for="ppaEscalation" class="input-label" data-lang-key="ppaEscalation">Індексація PPA</label>
+                            <div class="relative">
+                                <input type="number" id="ppaEscalation" class="input-field pr-16" value="2">
+                                <span class="unit" data-lang-key="unit_perYear">% / рік</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_ppaEscalation">Щорічне зростання ціни продажу енергії (PPA) для врахування інфляції або ринкових умов.</span>
                         </div>
                         <div class="input-group">
-                            <label for="projectLifetime" class="input-label" data-lang-key="projectLifetime">Термін служби проєкту <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_projectLifetime">Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.<br><br>Типове значення: 20 років.</span></span></label>
-                            <div class="relative"><input type="number" id="projectLifetime" class="input-field pr-16" value="20"><span class="unit" data-lang-key="unit_years">Років</span></div>
+                            <label for="projectLifetime" class="input-label" data-lang-key="projectLifetime">Термін служби проєкту</label>
+                            <div class="relative">
+                                <input type="number" id="projectLifetime" class="input-field pr-16" value="20">
+                                <span class="unit" data-lang-key="unit_years">Років</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_projectLifetime">Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.<br><br>Типове значення: 20 років.</span>
                         </div>
                         <div class="input-group">
-                            <label for="discountRate" class="input-label" data-lang-key="discountRate">Ставка дисконтування <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_discountRate">Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості.<br><br>Типовий діапазон (WACC): 4.2% - 10.0%.</span></span></label>
-                            <div class="relative"><input type="number" id="discountRate" class="input-field pr-12" value="7.5"><span class="unit">%</span></div>
+                            <label for="discountRate" class="input-label" data-lang-key="discountRate">Ставка дисконтування</label>
+                            <div class="relative">
+                                <input type="number" id="discountRate" class="input-field pr-12" value="7.5">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_discountRate">Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості.<br><br>Типовий діапазон (WACC): 4.2% - 10.0%.</span>
                         </div>
                          <div class="input-group">
-                            <label for="inflationRate" class="input-label" data-lang-key="inflationRate">Рівень інфляції <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_inflationRate">Середньорічний темп знецінення грошей, що використовується для розрахунку реальних показників.<br><br>Типове значення: ~2.0%.</span></span></label>
-                            <div class="relative"><input type="number" id="inflationRate" class="input-field pr-12" value="2.5"><span class="unit">%</span></div>
+                            <label for="inflationRate" class="input-label" data-lang-key="inflationRate">Рівень інфляції</label>
+                            <div class="relative">
+                                <input type="number" id="inflationRate" class="input-field pr-12" value="2.5">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_inflationRate">Середньорічний темп знецінення грошей, що використовується для розрахунку реальних показників.<br><br>Типове значення: ~2.0%.</span>
                         </div>
                     </section>
                 </div>
@@ -234,20 +322,86 @@
                      <div class="win-card p-6">
                         <table class="result-table">
                             <tbody>
-                                <tr><td><span data-lang-key="resNetCapitalCost">Чисті капітальні витрати</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resNetCapitalCost">Загальна початкова вартість проєкту без урахування фінансування.</span></span></td><td id="resNetCapitalCostValue">$0</td></tr>
-                                <tr><td><span data-lang-key="resRte">ККД повного циклу</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resRte">Ефективність системи 'туди-назад', враховуючи втрати при заряді та розряді.</span></span></td><td id="resRteValue">0%</td></tr>
-                                <tr><td><span data-lang-key="resEnergyChargedY1">Зарядка від мережі (Рік 1)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resEnergyChargedY1">Загальна кількість енергії, яку система споживе з мережі для зарядки протягом першого року.</span></span></td><td id="resEnergyChargedY1Value">0 МВт·год</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resNetCapitalCost">Чисті капітальні витрати</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resNetCapitalCost">Загальна початкова вартість проєкту без урахування фінансування.</span>
+                                    </td>
+                                    <td id="resNetCapitalCostValue">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resRte">ККД повного циклу</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resRte">Ефективність системи 'туди-назад', враховуючи втрати при заряді та розряді.</span>
+                                    </td>
+                                    <td id="resRteValue">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resEnergyChargedY1">Зарядка від мережі (Рік 1)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resEnergyChargedY1">Загальна кількість енергії, яку система споживе з мережі для зарядки протягом першого року.</span>
+                                    </td>
+                                    <td id="resEnergyChargedY1Value">0 МВт·год</td>
+                                </tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td><span data-lang-key="resLcoeNominal">LCOE (номінальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLcoeNominal">Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).</span></span></td><td id="resLcoeNominalValue">0.00</td></tr>
-                                <tr><td><span data-lang-key="resLcoeReal">LCOE (реальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLcoeReal">Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).</span></span></td><td id="resLcoeRealValue">0.00</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLcoeNominal">LCOE (номінальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLcoeNominal">Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).</span>
+                                    </td>
+                                    <td id="resLcoeNominalValue">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLcoeReal">LCOE (реальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLcoeReal">Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).</span>
+                                    </td>
+                                    <td id="resLcoeRealValue">0.00</td>
+                                </tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td><span data-lang-key="resPpaY1">Ціна PPA (Рік 1)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resPpaY1">Початкова ціна продажу електроенергії.</span></span></td><td id="resPpaY1Value">0.00</td></tr>
-                                <tr><td><span data-lang-key="resLppaNominal">LPPA (номінальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLppaNominal">Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.</span></span></td><td id="resLppaNominalValue">0.00</td></tr>
-                                <tr><td><span data-lang-key="resLppaReal">LPPA (реальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLppaReal">Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.</span></span></td><td id="resLppaRealValue">0.00</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resPpaY1">Ціна PPA (Рік 1)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resPpaY1">Початкова ціна продажу електроенергії.</span>
+                                    </td>
+                                    <td id="resPpaY1Value">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLppaNominal">LPPA (номінальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLppaNominal">Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.</span>
+                                    </td>
+                                    <td id="resLppaNominalValue">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLppaReal">LPPA (реальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLppaReal">Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.</span>
+                                    </td>
+                                    <td id="resLppaRealValue">0.00</td>
+                                </tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td><span data-lang-key="resNpv">Чиста приведена вартість (NPV)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resNpv">Різниця між дисконтованими доходами та витратами. Позитивне значення вказує на прибутковість.</span></span></td><td id="resNpvValue">$0</td></tr>
-                                <tr><td><span data-lang-key="resIrr">Внутрішня норма дохідності (IRR)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resIrr">Ставка дисконтування, за якої NPV проєкту дорівнює нулю. Показує очікувану дохідність інвестицій.</span></span></td><td id="resIrrValue">0.00%</td></tr>
-                                <tr><td><span data-lang-key="resPaybackYear">Рік досягнення IRR (окупність)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resPaybackYear">Рік, у якому дисконтовані доходи проєкту перевищують його дисконтовані витрати.</span></span></td><td id="resPaybackYearValue">0</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resNpv">Чиста приведена вартість (NPV)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resNpv">Різниця між дисконтованими доходами та витратами. Позитивне значення вказує на прибутковість.</span>
+                                    </td>
+                                    <td id="resNpvValue">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resIrr">Внутрішня норма дохідності (IRR)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resIrr">Ставка дисконтування, за якої NPV проєкту дорівнює нулю. Показує очікувану дохідність інвестицій.</span>
+                                    </td>
+                                    <td id="resIrrValue">0.00%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resPaybackYear">Рік досягнення IRR (окупність)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resPaybackYear">Рік, у якому дисконтовані доходи проєкту перевищують його дисконтовані витрати.</span>
+                                    </td>
+                                    <td id="resPaybackYearValue">0</td>
+                                </tr>
                             </tbody>
                         </table>
                      </div>
@@ -635,13 +789,6 @@
                     elem.innerHTML = translations[lang][key];
                 }
             });
-            
-            document.querySelectorAll('.tooltip-text').forEach(elem => {
-                 const key = elem.getAttribute('data-lang-key');
-                 if (translations[lang] && translations[lang][key]) {
-                    elem.innerHTML = translations[lang][key];
-                }
-            });
 
             document.getElementById('lang-uk').classList.toggle('active', lang === 'uk');
             document.getElementById('lang-en').classList.toggle('active', lang === 'en');
@@ -991,6 +1138,23 @@
         });
 
         // Initialize with default values and language
+        const batteryTypeSelector = document.getElementById('batteryType');
+        const batteryPresets = {
+            nmc: { rte: 88, degradationRate: 1.5 },
+            lfp: { rte: 93, degradationRate: 1.0 },
+            nca: { rte: 90, degradationRate: 1.8 },
+            'li-ion': { rte: 90, degradationRate: 1.6 },
+            'na-ion': { rte: 85, degradationRate: 1.2 }
+        };
+
+        batteryTypeSelector.addEventListener('change', (e) => {
+            const preset = batteryPresets[e.target.value];
+            if (preset) {
+                document.getElementById('rte').value = preset.rte;
+                document.getElementById('degradationRate').value = preset.degradationRate;
+            }
+        });
+        
         const savedLang = localStorage.getItem('bess_lang') || 'uk';
         setLanguage(savedLang);
         const event = new Event('change');
