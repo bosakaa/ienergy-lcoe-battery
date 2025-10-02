@@ -8,97 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f0f0;
-        }
-        .win-card {
-            background-color: #ffffff;
-            border: 1px solid #d0d0d0;
-        }
-        .input-group { margin-bottom: 1rem; }
-        .input-label { display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: 400; color: #333; font-size: 14px;}
-        .input-field, .select-field {
-            width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #8a8a8a;
-            background-color: white; transition: border-color 0.2s; border-radius: 0;
-        }
-        .input-field:focus, .select-field:focus {
-            outline: none; border-color: #0078d4; box-shadow: 0 0 0 1px #0078d4;
-        }
-        .unit { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: #555; pointer-events: none; }
-        .result-table { width: 100%; border-collapse: collapse; }
-        .result-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #e0e0e0; }
-        .result-table td:first-child { font-weight: 400; color: #333; display: flex; align-items: center;}
-        .result-table td:last-child { font-weight: 600; text-align: right; color: #000; }
-        .result-table tr:last-child td { border-bottom: none; }
-        
-        .win-button {
-            background-color: #e1e1e1; border: 1px solid #adadad; color: #000;
-            font-weight: 400; padding: 0.5rem 2rem; transition: background-color 0.2s, border-color 0.2s; border-radius: 0;
-        }
-        .win-button:hover { background-color: #e5f1fb; border-color: #0078d4; }
-        .win-button-primary { background-color: #0078d4; border-color: #005a9e; color: #fff; }
-        .win-button-primary:hover { background-color: #106ebe; border-color: #005a9e; }
-
-        .tooltip-container { position: relative; display: inline-block; margin-left: 8px; }
-        .tooltip-icon {
-            width: 16px; height: 16px; border-radius: 50%; background-color: #777;
-            color: white; font-size: 12px; font-weight: bold; display: flex;
-            align-items: center; justify-content: center; cursor: help;
-        }
-        .tooltip-text {
-            visibility: hidden; width: 280px; background-color: #333; color: #fff;
-            text-align: left; border-radius: 2px; padding: 8px; position: absolute;
-            z-index: 10; bottom: 125%; left: 50%; margin-left: -140px; opacity: 0;
-            transition: opacity 0.3s; font-size: 12px; font-weight: 400;
-        }
-        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
-
-        #side-menu {
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(-100%);
-        }
-        #side-menu.open {
-            transform: translateX(0);
-        }
-        .formula-item {
-            margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e0e0e0;
-        }
-        .formula-item:last-child { border-bottom: none; }
-        .formula-title { font-size: 1.1rem; font-weight: 600; color: #005a9e; }
-        .formula-explanation { font-size: 0.9rem; color: #333; margin-top: 0.5rem; }
-        .formula-math {
-            font-family: 'Courier New', Courier, monospace; background-color: #f0f0f0; padding: 0.5rem;
-            margin-top: 0.5rem; display: block; white-space: pre-wrap; font-size: 14px;
-        }
-        
-        /* Unit Switch Styles */
-        .unit-switch-container { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 1rem; }
-        .unit-switch { position: relative; display: inline-block; width: 110px; height: 28px; }
-        .unit-switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #e1e1e1; transition: .4s; border: 1px solid #adadad;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 20px; width: 48px; left: 3px; bottom: 3px;
-            background-color: white; transition: .4s;
-        }
-        input:checked + .slider { background-color: #0078d4; }
-        input:checked + .slider:before { transform: translateX(55px); }
-        .switch-label { margin: 0 8px; font-size: 14px; color: #333; }
-        
-        .lang-switch a {
-            cursor: pointer;
-            padding: 2px 6px;
-            font-weight: 600;
-        }
-        .lang-switch a.active {
-            color: #0078d4;
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="text-gray-900">
     <div id="side-menu" class="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white z-20 shadow-lg">
@@ -134,7 +44,7 @@
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2" data-lang-key="techParams">Технічні параметри</h2>
                         <div class="input-group">
-                            <label for="batteryType" class="input-label" data-lang-key="batteryType">Тип батареї <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_batteryType">Оберіть хімію акумулятора. Це автоматично оновить типові значення ККД та деградації.</span></span></label>
+                            <label for="batteryType" class="input-label" data-lang-key="batteryType">Тип батареї</label>
                             <select id="batteryType" class="select-field">
                                 <option value="nmc" data-lang-key="option_nmc">NMC (Збалансований)</option>
                                 <option value="lfp" data-lang-key="option_lfp">LFP (Довговічний)</option>
@@ -142,76 +52,141 @@
                                 <option value="li-ion" data-lang-key="option_liion">Li-ion (Високий ресурс)</option>
                                 <option value="na-ion" data-lang-key="option_naion">Na-ion (Перспективний)</option>
                             </select>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_batteryType">Оберіть хімію акумулятора. Це автоматично оновить типові значення ККД та деградації.</span>
                         </div>
                         <div class="input-group">
-                            <label for="systemPower" class="input-label" data-lang-key="systemPower">Потужність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_systemPower">Максимальна потужність, з якою система може заряджатися/розряджатися.<br><br>Типовий діапазон: 50 - 100 МВт.</span></span></label>
-                            <div class="relative"><input type="number" id="systemPower" class="input-field pr-14" value="50"><span class="unit">МВт</span></div>
+                            <label for="systemPower" class="input-label" data-lang-key="systemPower">Потужність системи</label>
+                            <div class="relative">
+                                <input type="number" id="systemPower" class="input-field pr-14" value="50">
+                                <span class="unit">МВт</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_systemPower">Максимальна потужність, з якою система може заряджатися/розряджатися.<br><br>Типовий діапазон: 50 - 100 МВт.</span>
                         </div>
                         <div class="input-group">
-                            <label for="systemCapacity" class="input-label" data-lang-key="systemCapacity">Ємність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_systemCapacity">Загальна кількість енергії, яку може зберігати батарея.<br><br>Типовий діапазон: 200 - 400 МВт·год (для 4-годинних систем).</span></span></label>
-                            <div class="relative"><input type="number" id="systemCapacity" class="input-field pr-20" value="200"><span class="unit">МВт·год</span></div>
+                            <label for="systemCapacity" class="input-label" data-lang-key="systemCapacity">Ємність системи</label>
+                            <div class="relative">
+                                <input type="number" id="systemCapacity" class="input-field pr-20" value="200">
+                                <span class="unit">МВт·год</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_systemCapacity">Загальна кількість енергії, яку може зберігати батарея.<br><br>Типовий діапазон: 200 - 400 МВт·год (для 4-годинних систем).</span>
                         </div>
                         <div class="input-group">
-                            <label for="rte" class="input-label" data-lang-key="rte">ККД повного циклу (RTE) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_rte">Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку.<br><br>Типовий діапазон: 88% - 91%.</span></span></label>
-                            <div class="relative"><input type="number" id="rte" class="input-field pr-12" value="88"><span class="unit">%</span></div>
+                            <label for="rte" class="input-label" data-lang-key="rte">ККД повного циклу (RTE)</label>
+                            <div class="relative">
+                                <input type="number" id="rte" class="input-field pr-12" value="88">
+                                <span class="unit">%</span>
+                            </div>
+                             <span class="tooltip-text" data-lang-key-html="tooltip_rte">Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку.<br><br>Типовий діапазон: 88% - 91%.</span>
                         </div>
                         <div class="input-group">
-                            <label for="dod" class="input-label" data-lang-key="dod">Глибина розряду (DoD) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_dod">Відсоток від повної ємності, що використовується в кожному циклі.<br><br>Типове значення: 90%.</span></span></label>
-                            <div class="relative"><input type="number" id="dod" class="input-field pr-12" value="90"><span class="unit">%</span></div>
+                            <label for="dod" class="input-label" data-lang-key="dod">Глибина розряду (DoD)</label>
+                            <div class="relative">
+                                <input type="number" id="dod" class="input-field pr-12" value="90">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_dod">Відсоток від повної ємності, що використовується в кожному циклі.<br><br>Типове значення: 90%.</span>
                         </div>
                         <div class="input-group">
-                            <label for="cyclesPerYear" class="input-label" data-lang-key="cyclesPerYear">Кількість циклів на рік <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_cyclesPerYear">Очікувана кількість повних циклів заряду-розряду протягом року.<br><br>Типове значення: 350.</span></span></label>
-                            <div class="relative"><input type="number" id="cyclesPerYear" class="input-field pr-20" value="350"><span class="unit" data-lang-key="unit_cycles">циклів</span></div>
+                            <label for="cyclesPerYear" class="input-label" data-lang-key="cyclesPerYear">Кількість циклів на рік</label>
+                            <div class="relative">
+                                <input type="number" id="cyclesPerYear" class="input-field pr-20" value="350">
+                                <span class="unit" data-lang-key="unit_cycles">циклів</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_cyclesPerYear">Очікувана кількість повних циклів заряду-розряду протягом року.<br><br>Типове значення: 350.</span>
                         </div>
                          <div class="input-group">
-                            <label for="degradationRate" class="input-label" data-lang-key="degradationRate">Річна деградація ємності <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_degradationRate">Відсоток втрати максимальної ємності батареї щороку через зношення.<br><br>Типове значення: ~2.6%.</span></span></label>
-                            <div class="relative"><input type="number" id="degradationRate" class="input-field pr-12" value="1.5"><span class="unit">%</span></div>
+                            <label for="degradationRate" class="input-label" data-lang-key="degradationRate">Річна деградація ємності</label>
+                            <div class="relative">
+                                <input type="number" id="degradationRate" class="input-field pr-12" value="1.5">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_degradationRate">Відсоток втрати максимальної ємності батареї щороку через зношення.<br><br>Типове значення: ~2.6%.</span>
                         </div>
                     </section>
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2" data-lang-key="costParams">Параметри витрат</h2>
                         <div class="input-group">
-                            <label for="capex" class="input-label" data-lang-key="capex">Капітальні витрати (CAPEX) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_capex">Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію.<br><br>Типовий діапазон (storage): $249 - $421/кВт·год.</span></span></label>
-                            <div class="relative"><input type="number" id="capex" class="input-field pr-24" value="350"><span class="unit">$/кВт·год</span></div>
+                            <label for="capex" class="input-label" data-lang-key="capex">Капітальні витрати (CAPEX)</label>
+                            <div class="relative">
+                                <input type="number" id="capex" class="input-field pr-24" value="350">
+                                <span class="unit">$/кВт·год</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_capex">Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію.<br><br>Типовий діапазон (storage): $249 - $421/кВт·год.</span>
                         </div>
                         <div class="input-group">
-                            <label for="omCost" class="input-label" data-lang-key="omCost">Фіксовані витрати на O&M <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_omCost">Щорічні витрати на обслуговування, моніторинг та страхування.<br><br>Типовий діапазон (PV): $11 - $14/кВт-рік.</span></span></label>
-                            <div class="relative"><input type="number" id="omCost" class="input-field pr-24" value="12"><span class="unit">$/кВт-рік</span></div>
+                            <label for="omCost" class="input-label" data-lang-key="omCost">Фіксовані витрати на O&M</label>
+                            <div class="relative">
+                                <input type="number" id="omCost" class="input-field pr-24" value="12">
+                                <span class="unit">$/кВт-рік</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_omCost">Щорічні витрати на обслуговування, моніторинг та страхування.<br><br>Типовий діапазон (PV): $11 - $14/кВт-рік.</span>
                         </div>
                         <div class="input-group">
-                            <label for="chargingCost" class="input-label" data-lang-key="chargingCost">Вартість енергії для зарядки <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_chargingCost">Середня ціна, за якою система купує електроенергію з мережі для зарядки.<br><br>Типове значення (standalone): ~$51/МВт·год.</span></span></label>
-                            <div class="relative"><input type="number" id="chargingCost" class="input-field pr-24" value="40"><span class="unit">$/МВт·год</span></div>
+                            <label for="chargingCost" class="input-label" data-lang-key="chargingCost">Вартість енергії для зарядки</label>
+                            <div class="relative">
+                                <input type="number" id="chargingCost" class="input-field pr-24" value="40">
+                                <span class="unit">$/МВт·год</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_chargingCost">Середня ціна, за якою система купує електроенергію з мережі для зарядки.<br><br>Типове значення (standalone): ~$51/МВт·год.</span>
                         </div>
                         <div class="input-group">
-                            <label for="replacementCost" class="input-label" data-lang-key="replacementCost">Вартість заміни <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_replacementCost">Вартість заміни акумуляторного блоку у відсотках від початкових капітальних витрат.</span></span></label>
-                             <div class="relative"><input type="number" id="replacementCost" class="input-field pr-24" value="60"><span class="unit" data-lang-key="unit_ofCapex">% від CAPEX</span></div>
+                            <label for="replacementCost" class="input-label" data-lang-key="replacementCost">Вартість заміни</label>
+                             <div class="relative">
+                                <input type="number" id="replacementCost" class="input-field pr-24" value="60">
+                                <span class="unit" data-lang-key="unit_ofCapex">% від CAPEX</span>
+                             </div>
+                             <span class="tooltip-text" data-lang-key-html="tooltip_replacementCost">Вартість заміни акумуляторного блоку у відсотках від початкових капітальних витрат.</span>
                         </div>
                         <div class="input-group">
-                            <label for="replacementYear" class="input-label" data-lang-key="replacementYear">Рік заміни <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_replacementYear">Рік, у якому планується провести повну заміну акумуляторних модулів. Модель Lazard використовує "аугментацію" замість повної заміни.</span></span></label>
-                            <div class="relative"><input type="number" id="replacementYear" class="input-field pr-14" value="12"><span class="unit" data-lang-key="unit_year">Рік</span></div>
+                            <label for="replacementYear" class="input-label" data-lang-key="replacementYear">Рік заміни</label>
+                            <div class="relative">
+                                <input type="number" id="replacementYear" class="input-field pr-14" value="12">
+                                <span class="unit" data-lang-key="unit_year">Рік</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_replacementYear">Рік, у якому планується провести повну заміну акумуляторних модулів. Модель Lazard використовує "аугментацію" замість повної заміни.</span>
                         </div>
                     </section>
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2" data-lang-key="finParams">Фінансові параметри</h2>
                         <div class="input-group">
-                            <label for="ppaPrice" class="input-label" data-lang-key="ppaPrice">Ціна продажу (PPA), Рік 1 <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_ppaPrice">Ціна, за якою система продає 1 МВт·год енергії в перший рік роботи.</span></span></label>
-                            <div class="relative"><input type="number" id="ppaPrice" class="input-field pr-24" value="200"><span class="unit">$/МВт·год</span></div>
+                            <label for="ppaPrice" class="input-label" data-lang-key="ppaPrice">Ціна продажу (PPA), Рік 1</label>
+                            <div class="relative">
+                                <input type="number" id="ppaPrice" class="input-field pr-24" value="200">
+                                <span class="unit">$/МВт·год</span>
+                            </div>
+                             <span class="tooltip-text" data-lang-key-html="tooltip_ppaPrice">Ціна, за якою система продає 1 МВт·год енергії в перший рік роботи.</span>
                         </div>
                         <div class="input-group">
-                            <label for="ppaEscalation" class="input-label" data-lang-key="ppaEscalation">Індексація PPA <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_ppaEscalation">Щорічне зростання ціни продажу енергії (PPA) для врахування інфляції або ринкових умов.</span></span></label>
-                            <div class="relative"><input type="number" id="ppaEscalation" class="input-field pr-16" value="2"><span class="unit" data-lang-key="unit_perYear">% / рік</span></div>
+                            <label for="ppaEscalation" class="input-label" data-lang-key="ppaEscalation">Індексація PPA</label>
+                            <div class="relative">
+                                <input type="number" id="ppaEscalation" class="input-field pr-16" value="2">
+                                <span class="unit" data-lang-key="unit_perYear">% / рік</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_ppaEscalation">Щорічне зростання ціни продажу енергії (PPA) для врахування інфляції або ринкових умов.</span>
                         </div>
                         <div class="input-group">
-                            <label for="projectLifetime" class="input-label" data-lang-key="projectLifetime">Термін служби проєкту <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_projectLifetime">Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.<br><br>Типове значення: 20 років.</span></span></label>
-                            <div class="relative"><input type="number" id="projectLifetime" class="input-field pr-16" value="20"><span class="unit" data-lang-key="unit_years">Років</span></div>
+                            <label for="projectLifetime" class="input-label" data-lang-key="projectLifetime">Термін служби проєкту</label>
+                            <div class="relative">
+                                <input type="number" id="projectLifetime" class="input-field pr-16" value="20">
+                                <span class="unit" data-lang-key="unit_years">Років</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_projectLifetime">Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.<br><br>Типове значення: 20 років.</span>
                         </div>
                         <div class="input-group">
-                            <label for="discountRate" class="input-label" data-lang-key="discountRate">Ставка дисконтування <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_discountRate">Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості.<br><br>Типовий діапазон (WACC): 4.2% - 10.0%.</span></span></label>
-                            <div class="relative"><input type="number" id="discountRate" class="input-field pr-12" value="7.5"><span class="unit">%</span></div>
+                            <label for="discountRate" class="input-label" data-lang-key="discountRate">Ставка дисконтування</label>
+                            <div class="relative">
+                                <input type="number" id="discountRate" class="input-field pr-12" value="7.5">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_discountRate">Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості.<br><br>Типовий діапазон (WACC): 4.2% - 10.0%.</span>
                         </div>
                          <div class="input-group">
-                            <label for="inflationRate" class="input-label" data-lang-key="inflationRate">Рівень інфляції <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_inflationRate">Середньорічний темп знецінення грошей, що використовується для розрахунку реальних показників.<br><br>Типове значення: ~2.0%.</span></span></label>
-                            <div class="relative"><input type="number" id="inflationRate" class="input-field pr-12" value="2.5"><span class="unit">%</span></div>
+                            <label for="inflationRate" class="input-label" data-lang-key="inflationRate">Рівень інфляції</label>
+                            <div class="relative">
+                                <input type="number" id="inflationRate" class="input-field pr-12" value="2.5">
+                                <span class="unit">%</span>
+                            </div>
+                            <span class="tooltip-text" data-lang-key-html="tooltip_inflationRate">Середньорічний темп знецінення грошей, що використовується для розрахунку реальних показників.<br><br>Типове значення: ~2.0%.</span>
                         </div>
                     </section>
                 </div>
@@ -234,20 +209,86 @@
                      <div class="win-card p-6">
                         <table class="result-table">
                             <tbody>
-                                <tr><td><span data-lang-key="resNetCapitalCost">Чисті капітальні витрати</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resNetCapitalCost">Загальна початкова вартість проєкту без урахування фінансування.</span></span></td><td id="resNetCapitalCostValue">$0</td></tr>
-                                <tr><td><span data-lang-key="resRte">ККД повного циклу</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resRte">Ефективність системи 'туди-назад', враховуючи втрати при заряді та розряді.</span></span></td><td id="resRteValue">0%</td></tr>
-                                <tr><td><span data-lang-key="resEnergyChargedY1">Зарядка від мережі (Рік 1)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resEnergyChargedY1">Загальна кількість енергії, яку система споживе з мережі для зарядки протягом першого року.</span></span></td><td id="resEnergyChargedY1Value">0 МВт·год</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resNetCapitalCost">Чисті капітальні витрати</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resNetCapitalCost">Загальна початкова вартість проєкту без урахування фінансування.</span>
+                                    </td>
+                                    <td id="resNetCapitalCostValue">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resRte">ККД повного циклу</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resRte">Ефективність системи 'туди-назад', враховуючи втрати при заряді та розряді.</span>
+                                    </td>
+                                    <td id="resRteValue">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resEnergyChargedY1">Зарядка від мережі (Рік 1)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resEnergyChargedY1">Загальна кількість енергії, яку система споживе з мережі для зарядки протягом першого року.</span>
+                                    </td>
+                                    <td id="resEnergyChargedY1Value">0 МВт·год</td>
+                                </tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td><span data-lang-key="resLcoeNominal">LCOE (номінальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLcoeNominal">Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).</span></span></td><td id="resLcoeNominalValue">0.00</td></tr>
-                                <tr><td><span data-lang-key="resLcoeReal">LCOE (реальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLcoeReal">Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).</span></span></td><td id="resLcoeRealValue">0.00</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLcoeNominal">LCOE (номінальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLcoeNominal">Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).</span>
+                                    </td>
+                                    <td id="resLcoeNominalValue">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLcoeReal">LCOE (реальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLcoeReal">Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).</span>
+                                    </td>
+                                    <td id="resLcoeRealValue">0.00</td>
+                                </tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td><span data-lang-key="resPpaY1">Ціна PPA (Рік 1)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resPpaY1">Початкова ціна продажу електроенергії.</span></span></td><td id="resPpaY1Value">0.00</td></tr>
-                                <tr><td><span data-lang-key="resLppaNominal">LPPA (номінальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLppaNominal">Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.</span></span></td><td id="resLppaNominalValue">0.00</td></tr>
-                                <tr><td><span data-lang-key="resLppaReal">LPPA (реальний)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resLppaReal">Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.</span></span></td><td id="resLppaRealValue">0.00</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resPpaY1">Ціна PPA (Рік 1)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resPpaY1">Початкова ціна продажу електроенергії.</span>
+                                    </td>
+                                    <td id="resPpaY1Value">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLppaNominal">LPPA (номінальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLppaNominal">Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.</span>
+                                    </td>
+                                    <td id="resLppaNominalValue">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resLppaReal">LPPA (реальний)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resLppaReal">Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.</span>
+                                    </td>
+                                    <td id="resLppaRealValue">0.00</td>
+                                </tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td><span data-lang-key="resNpv">Чиста приведена вартість (NPV)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resNpv">Різниця між дисконтованими доходами та витратами. Позитивне значення вказує на прибутковість.</span></span></td><td id="resNpvValue">$0</td></tr>
-                                <tr><td><span data-lang-key="resIrr">Внутрішня норма дохідності (IRR)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resIrr">Ставка дисконтування, за якої NPV проєкту дорівнює нулю. Показує очікувану дохідність інвестицій.</span></span></td><td id="resIrrValue">0.00%</td></tr>
-                                <tr><td><span data-lang-key="resPaybackYear">Рік досягнення IRR (окупність)</span> <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text" data-lang-key="tooltip_resPaybackYear">Рік, у якому дисконтовані доходи проєкту перевищують його дисконтовані витрати.</span></span></td><td id="resPaybackYearValue">0</td></tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resNpv">Чиста приведена вартість (NPV)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resNpv">Різниця між дисконтованими доходами та витратами. Позитивне значення вказує на прибутковість.</span>
+                                    </td>
+                                    <td id="resNpvValue">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resIrr">Внутрішня норма дохідності (IRR)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resIrr">Ставка дисконтування, за якої NPV проєкту дорівнює нулю. Показує очікувану дохідність інвестицій.</span>
+                                    </td>
+                                    <td id="resIrrValue">0.00%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span data-lang-key="resPaybackYear">Рік досягнення IRR (окупність)</span>
+                                        <span class="tooltip-text" data-lang-key-html="tooltip_resPaybackYear">Рік, у якому дисконтовані доходи проєкту перевищують його дисконтовані витрати.</span>
+                                    </td>
+                                    <td id="resPaybackYearValue">0</td>
+                                </tr>
                             </tbody>
                         </table>
                      </div>
@@ -271,732 +312,18 @@
             <div id="formulas-page" class="page-content hidden win-card p-6 sm:p-8">
                 <h2 class="text-2xl font-light mb-6" data-lang-key="formulasTitle">Використані формули та метрики</h2>
                 <div data-lang-key-html="formulasContent">
-                    <div class="formula-item">
-                        <p class="formula-title">Чисті капітальні витрати (Net Capital Cost)</p>
-                        <p class="formula-explanation">Загальні початкові інвестиції в проєкт. Розраховуються як добуток питомих капітальних витрат на загальну ємність системи.</p>
-                        <code class="formula-math">CAPEX = Ємність_системи (кВт·год) * Питомі_витрати ($/кВт·год)</code>
                     </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Енергія для зарядки (Рік 1)</p>
-                        <p class="formula-explanation">Загальна кількість енергії, яку потрібно закупити з мережі для зарядки системи протягом першого року, з урахуванням втрат (ККД).</p>
-                        <code class="formula-math">Енергія_зарядки = (Енергія_розрядки_рік_1) / ККД</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Чиста приведена вартість (NPV)</p>
-                        <p class="formula-explanation">NPV — це різниця між сьогоднішньою вартістю майбутніх доходів та сьогоднішньою вартістю витрат. Це ключовий показник прибутковості інвестицій. Проєкт вважається фінансово доцільним, якщо NPV > 0.</p>
-                        <code class="formula-math">NPV = Σ [ (Доходи_t - Витрати_t) / (1 + r)^t ] - CAPEX</code>
-                        <p class="formula-explanation mt-2">де 't' - рік, 'r' - ставка дисконтування.</p>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Внутрішня норма дохідності (IRR)</p>
-                        <p class="formula-explanation">IRR — це ставка дисконтування, за якої NPV проєкту дорівнює нулю. Вона показує очікувану річну дохідність інвестицій. Проєкт привабливий, якщо IRR вища за вартість капіталу (ставку дисконтування).</p>
-                        <code class="formula-math">0 = Σ [ (Доходи_t - Витрати_t) / (1 + IRR)^t ] - CAPEX</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Нормована вартість енергії (LCOE)</p>
-                        <p class="formula-explanation">LCOE представляє середню собівартість однієї одиниці енергії (кВт·год або МВт·год) за весь життєвий цикл. Це точка беззбитковості для продажу енергії.</p>
-                        <code class="formula-math">LCOE = (Сума дисконтованих витрат) / (Сума дисконтованої енергії)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Нормована ціна договору (LPPA)</p>
-                        <p class="formula-explanation">LPPA — це середня ціна продажу однієї одиниці енергії за весь життєвий цикл, приведена до сьогоднішньої вартості.</p>
-                        <code class="formula-math">LPPA = (Сума дисконтованих доходів) / (Сума дисконтованої енергії)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Реальна та номінальна ставка</p>
-                        <p class="formula-explanation">Номінальні показники не враховують інфляцію, тоді як реальні її враховують. Реальна ставка дисконтування використовується для розрахунку реальних LCOE та LPPA.</p>
-                        <code class="formula-math">РеальнаСтавка = ((1 + НомінальнаСтавка) / (1 + Інфляція)) - 1</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Дисконтований період окупності</p>
-                        <p class="formula-explanation">Рік, у якому кумулятивна (накопичена) дисконтована вартість чистих грошових потоків (доходи мінус витрати) вперше стає додатною.</p>
-                    </div>
-                </div>
             </div>
 
             <div id="contacts-page" class="page-content hidden win-card p-6 sm:p-8">
                 <h2 class="text-2xl font-light mb-6" data-lang-key="contactsTitle">Контакти</h2>
                 <div data-lang-key-html="contactsContent">
-                    <p class="mb-2"><strong>Інститут загальної енергетики НАН України</strong></p>
-                    <p>Адреса: вул. Антоновича, 172, Київ, 03150, Україна</p>
-                    <p>Телефон: (096) 852-04-95</p>
-                    <p>Email: bosak_av@nas.gov.ua</p>
                 </div>
             </div>
         </main>
     </div>
 
-    <script>
-        window.onload = () => {
-            // --- CHART INSTANCES ---
-            let cashflowChart = null, degradationChart = null, cumulativeNpvChart = null;
-            
-            // --- DATA STORAGE ---
-            let lastInputs = null;
-            let lastRawResults = {}; 
-            let lastChartData = {};
-
-            // --- TRANSLATIONS ---
-            const translations = {
-                uk: {
-                    appTitle: "Калькулятор усередненої вартості електроенергії (LCOE) для установок зберігання енергії (BESS)",
-                    appHeader: "Калькулятор усередненої вартості електроенергії (LCOE) для установок зберігання енергії (BESS)",
-                    instituteName: "Інститут загальної енергетики НАН України",
-                    menu: "Меню",
-                    calculator: "Калькулятор",
-                    formulas: "Формули",
-                    contacts: "Контакти",
-                    techParams: "Технічні параметри",
-                    costParams: "Параметри витрат",
-                    finParams: "Фінансові параметри",
-                    batteryType: "Тип батареї",
-                    option_nmc: "NMC (Збалансований)",
-                    option_lfp: "LFP (Довговічний)",
-                    option_nca: "NCA (Високоенергетичний)",
-                    option_liion: "Li-ion (Високий ресурс)",
-                    option_naion: "Na-ion (Перспективний)",
-                    systemPower: "Потужність системи",
-                    systemCapacity: "Ємність системи",
-                    rte: "ККД повного циклу (RTE)",
-                    dod: "Глибина розряду (DoD)",
-                    cyclesPerYear: "Кількість циклів на рік",
-                    unit_cycles: "циклів",
-                    degradationRate: "Річна деградація ємності",
-                    capex: "Капітальні витрати (CAPEX)",
-                    omCost: "Фіксовані витрати на O&M",
-                    chargingCost: "Вартість енергії для зарядки",
-                    replacementCost: "Вартість заміни",
-                    unit_ofCapex: "% від CAPEX",
-                    replacementYear: "Рік заміни",
-                    unit_year: "Рік",
-                    ppaPrice: "Ціна продажу (PPA), Рік 1",
-                    ppaEscalation: "Індексація PPA",
-                    unit_perYear: "% / рік",
-                    projectLifetime: "Термін служби проєкту",
-                    unit_years: "Років",
-                    discountRate: "Ставка дисконтування",
-                    inflationRate: "Рівень інфляції",
-                    exportBtn: "Експортувати в Excel",
-                    calculateBtn: "Розрахувати",
-                    resultsTitle: "Результати моделювання",
-                    resNetCapitalCost: "Чисті капітальні витрати",
-                    resRte: "ККД повного циклу",
-                    resEnergyChargedY1: "Зарядка від мережі (Рік 1)",
-                    resLcoeNominal: "LCOE (номінальний)",
-                    resLcoeReal: "LCOE (реальний)",
-                    resPpaY1: "Ціна PPA (Рік 1)",
-                    resLppaNominal: "LPPA (номінальний)",
-                    resLppaReal: "LPPA (реальний)",
-                    resNpv: "Чиста приведена вартість (NPV)",
-                    resIrr: "Внутрішня норма дохідності (IRR)",
-                    resPaybackYear: "Рік досягнення IRR (окупність)",
-                    chart_cashflow: "Річні грошові потоки",
-                    chart_degradation: "Деградація ємності",
-                    chart_cumulativeNpv: "Кумулятивний дисконтований грошовий потік (NPV)",
-                    formulasTitle: "Використані формули та метрики",
-                    contactsTitle: "Контакти",
-                    chart_revenue: "Доходи",
-                    chart_chargingCost: "Вартість зарядки",
-                    chart_omCost: "O&M",
-                    chart_replacementCost: "Заміна",
-                    chart_capacity: "Ємність",
-                    chart_year: "Рік",
-                    chart_value: "Значення",
-                    chart_cumulative_npv: "Кумулятивний NPV",
-                    tooltip_batteryType: "Оберіть хімію акумулятора. Це автоматично оновить типові значення ККД та деградації.",
-                    tooltip_systemPower: "Максимальна потужність, з якою система може заряджатися/розряджатися.<br><br>Типовий діапазон: 50 - 100 МВт.",
-                    tooltip_systemCapacity: "Загальна кількість енергії, яку може зберігати батарея.<br><br>Типовий діапазон: 200 - 400 МВт·год (для 4-годинних систем).",
-                    tooltip_rte: "Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку.<br><br>Типовий діапазон: 88% - 91%.",
-                    tooltip_dod: "Відсоток від повної ємності, що використовується в кожному циклі.<br><br>Типове значення: 90%.",
-                    tooltip_cyclesPerYear: "Очікувана кількість повних циклів заряду-розряду протягом року.<br><br>Типове значення: 350.",
-                    tooltip_degradationRate: "Відсоток втрати максимальної ємності батареї щороку через зношення.<br><br>Типове значення: ~2.6%.",
-                    tooltip_capex: "Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію.<br><br>Типовий діапазон (storage): $249 - $421/кВт·год.",
-                    tooltip_omCost: "Щорічні витрати на обслуговування, моніторинг та страхування.<br><br>Типовий діапазон (PV): $11 - $14/кВт-рік.",
-                    tooltip_chargingCost: "Середня ціна, за якою система купує електроенергію з мережі для зарядки.<br><br>Типове значення (standalone): ~$51/МВт·год.",
-                    tooltip_replacementCost: "Вартість заміни акумуляторного блоку у відсотках від початкових капітальних витрат.",
-                    tooltip_replacementYear: "Рік, у якому планується провести повну заміну акумуляторних модулів. Модель Lazard використовує \"аугментацію\" замість повної заміни.",
-                    tooltip_ppaPrice: "Ціна, за якою система продає 1 МВт·год енергії в перший рік роботи.",
-                    tooltip_ppaEscalation: "Щорічне зростання ціни продажу енергії (PPA) для врахування інфляції або ринкових умов.",
-                    tooltip_projectLifetime: "Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.<br><br>Типове значення: 20 років.",
-                    tooltip_discountRate: "Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості.<br><br>Типовий діапазон (WACC): 4.2% - 10.0%.",
-                    tooltip_inflationRate: "Середньорічний темп знецінення грошей, що використовується для розрахунку реальних показників.<br><br>Типове значення: ~2.0%.",
-                    tooltip_resNetCapitalCost: "Загальна початкова вартість проєкту без урахування фінансування.",
-                    tooltip_resRte: "Ефективність системи 'туди-назад', враховуючи втрати при заряді та розряді.",
-                    tooltip_resEnergyChargedY1: "Загальна кількість енергії, яку система споживе з мережі для зарядки протягом першого року.",
-                    tooltip_resLcoeNominal: "Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).",
-                    tooltip_resLcoeReal: "Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).",
-                    tooltip_resPpaY1: "Початкова ціна продажу електроенергії.",
-                    tooltip_resLppaNominal: "Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.",
-                    tooltip_resLppaReal: "Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.",
-                    tooltip_resNpv: "Різниця між дисконтованими доходами та витратами. Позитивне значення вказує на прибутковість.",
-                    tooltip_resIrr: "Ставка дисконтування, за якої NPV проєкту дорівнює нулю. Показує очікувану дохідність інвестицій.",
-                    tooltip_resPaybackYear: "Рік, у якому дисконтовані доходи проєкту перевищують його дисконтовані витрати.",
-                    formulasContent: `<div class="formula-item">
-                        <p class="formula-title">Чисті капітальні витрати (Net Capital Cost)</p>
-                        <p class="formula-explanation">Загальні початкові інвестиції в проєкт. Розраховуються як добуток питомих капітальних витрат на загальну ємність системи.</p>
-                        <code class="formula-math">CAPEX = Ємність_системи (кВт·год) * Питомі_витрати ($/кВт·год)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Енергія для зарядки (Рік 1)</p>
-                        <p class="formula-explanation">Загальна кількість енергії, яку потрібно закупити з мережі для зарядки системи протягом першого року, з урахуванням втрат (ККД).</p>
-                        <code class="formula-math">Енергія_зарядки = (Енергія_розрядки_рік_1) / ККД</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Чиста приведена вартість (NPV)</p>
-                        <p class="formula-explanation">NPV — це різниця між сьогоднішньою вартістю майбутніх доходів та сьогоднішньою вартістю витрат. Це ключовий показник прибутковості інвестицій. Проєкт вважається фінансово доцільним, якщо NPV > 0.</p>
-                        <code class="formula-math">NPV = Σ [ (Доходи_t - Витрати_t) / (1 + r)^t ] - CAPEX</code>
-                        <p class="formula-explanation mt-2">де 't' - рік, 'r' - ставка дисконтування.</p>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Внутрішня норма дохідності (IRR)</p>
-                        <p class="formula-explanation">IRR — це ставка дисконтування, за якої NPV проєкту дорівнює нулю. Вона показує очікувану річну дохідність інвестицій. Проєкт привабливий, якщо IRR вища за вартість капіталу (ставку дисконтування).</p>
-                        <code class="formula-math">0 = Σ [ (Доходи_t - Витрати_t) / (1 + IRR)^t ] - CAPEX</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Нормована вартість енергії (LCOE)</p>
-                        <p class="formula-explanation">LCOE представляє середню собівартість однієї одиниці енергії (кВт·год або МВт·год) за весь життєвий цикл. Це точка беззбитковості для продажу енергії.</p>
-                        <code class="formula-math">LCOE = (Сума дисконтованих витрат) / (Сума дисконтованої енергії)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Нормована ціна договору (LPPA)</p>
-                        <p class="formula-explanation">LPPA — це середня ціна продажу однієї одиниці енергії за весь життєвий цикл, приведена до сьогоднішньої вартості.</p>
-                        <code class="formula-math">LPPA = (Сума дисконтованих доходів) / (Сума дисконтованої енергії)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Реальна та номінальна ставка</p>
-                        <p class="formula-explanation">Номінальні показники не враховують інфляцію, тоді як реальні її враховують. Реальна ставка дисконтування використовується для розрахунку реальних LCOE та LPPA.</p>
-                        <code class="formula-math">РеальнаСтавка = ((1 + НомінальнаСтавка) / (1 + Інфляція)) - 1</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Дисконтований період окупності</p>
-                        <p class="formula-explanation">Рік, у якому кумулятивна (накопичена) дисконтована вартість чистих грошових потоків (доходи мінус витрати) вперше стає додатною.</p>
-                    </div>`,
-                contactsContent: `<p class="mb-2"><strong>Інститут загальної енергетики НАН України</strong></p>
-                    <p>Адреса: вул. Антоновича, 172, Київ, 03150, Україна</p>
-                    <p>Телефон: (096) 852-04-95</p>
-                    <p>Email: bosak_av@nas.gov.ua</p>`
-            },
-            en: {
-                appTitle: "Levelized Cost of Energy (LCOE) Calculator for Battery Energy Storage Systems (BESS)",
-                appHeader: "Levelized Cost of Energy (LCOE) Calculator for BESS",
-                instituteName: "Institute of General Energy of NAS of Ukraine",
-                menu: "Menu",
-                calculator: "Calculator",
-                formulas: "Formulas",
-                contacts: "Contacts",
-                techParams: "Technical Parameters",
-                costParams: "Cost Parameters",
-                finParams: "Financial Parameters",
-                batteryType: "Battery Type",
-                option_nmc: "NMC (Balanced)",
-                option_lfp: "LFP (Long Life)",
-                option_nca: "NCA (High Energy)",
-                option_liion: "Li-ion (High Cycle)",
-                option_naion: "Na-ion (Emerging)",
-                systemPower: "System Power",
-                systemCapacity: "System Capacity",
-                rte: "Round Trip Efficiency (RTE)",
-                dod: "Depth of Discharge (DoD)",
-                cyclesPerYear: "Cycles Per Year",
-                unit_cycles: "cycles",
-                degradationRate: "Annual Capacity Degradation",
-                capex: "Capital Expenditures (CAPEX)",
-                omCost: "Fixed O&M Costs",
-                chargingCost: "Charging Energy Cost",
-                replacementCost: "Replacement Cost",
-                unit_ofCapex: "% of CAPEX",
-                replacementYear: "Replacement Year",
-                unit_year: "Year",
-                ppaPrice: "PPA Price, Year 1",
-                ppaEscalation: "PPA Escalation",
-                unit_perYear: "% / year",
-                projectLifetime: "Project Lifetime",
-                unit_years: "Years",
-                discountRate: "Discount Rate",
-                inflationRate: "Inflation Rate",
-                exportBtn: "Export to Excel",
-                calculateBtn: "Calculate",
-                resultsTitle: "Simulation Results",
-                resNetCapitalCost: "Net Capital Cost",
-                resRte: "Round Trip Efficiency",
-                resEnergyChargedY1: "Grid Charging (Year 1)",
-                resLcoeNominal: "LCOE (Nominal)",
-                resLcoeReal: "LCOE (Real)",
-                resPpaY1: "PPA Price (Year 1)",
-                resLppaNominal: "LPPA (Nominal)",
-                resLppaReal: "LPPA (Real)",
-                resNpv: "Net Present Value (NPV)",
-                resIrr: "Internal Rate of Return (IRR)",
-                resPaybackYear: "IRR Achieved (Payback Year)",
-                chart_cashflow: "Annual Cash Flows",
-                chart_degradation: "Capacity Degradation",
-                chart_cumulativeNpv: "Cumulative Discounted Cash Flow (NPV)",
-                formulasTitle: "Formulas and Metrics Used",
-                contactsTitle: "Contacts",
-                chart_revenue: "Revenue",
-                chart_chargingCost: "Charging Cost",
-                chart_omCost: "O&M",
-                chart_replacementCost: "Replacement",
-                chart_capacity: "Capacity",
-                chart_year: "Year",
-                chart_value: "Value",
-                chart_cumulative_npv: "Cumulative NPV",
-                tooltip_batteryType: "Select the battery chemistry. This will automatically update typical RTE and degradation values.",
-                tooltip_systemPower: "The maximum power (rate) at which the system can charge or discharge.<br><br>Typical range: 50 - 100 MW.",
-                tooltip_systemCapacity: "The total amount of energy the battery can store.<br><br>Typical range: 200 - 400 MWh (for 4-hour systems).",
-                tooltip_rte: "The percentage of energy returned during discharge relative to the energy spent on charging. Accounts for losses.<br><br>Typical range: 88% - 91%.",
-                tooltip_dod: "The percentage of full capacity used in each cycle. A lower DoD extends battery life.<br><br>Typical value: 90%.",
-                tooltip_cyclesPerYear: "The expected number of full charge-discharge cycles per year.<br><br>Typical value: 350.",
-                tooltip_degradationRate: "The percentage loss of maximum battery capacity each year due to wear.<br><br>Typical value: ~2.6%.",
-                tooltip_capex: "Initial investment costs for equipment, installation, and commissioning.<br><br>Typical range (storage): $249 - $421/kWh.",
-                tooltip_omCost: "Annual costs for maintenance, monitoring, and insurance.<br><br>Typical range (PV): $11 - $14/kW-year.",
-                tooltip_chargingCost: "The average price at which the system buys electricity from the grid to charge.<br><br>Typical value (standalone): ~$51/MWh.",
-                tooltip_replacementCost: "The cost of replacing the battery stack as a percentage of the initial capital expenditure.",
-                tooltip_replacementYear: "The year in which a full replacement of the battery modules is planned. The Lazard model uses 'augmentation' instead of full replacement.",
-                tooltip_ppaPrice: "The price at which the system sells 1 MWh of energy in the first year of operation.",
-                tooltip_ppaEscalation: "The annual increase in the PPA price to account for inflation or market conditions.",
-                tooltip_projectLifetime: "The total period over which the project will be operated and analyzed.<br><br>Typical value: 20 years.",
-                tooltip_discountRate: "The rate of return used to discount future cash flows to their present value. Reflects the cost of capital and risks.<br><br>Typical range (WACC): 4.2% - 10.0%.",
-                tooltip_inflationRate: "The average annual rate of currency depreciation, used to calculate real (inflation-adjusted) metrics.<br><br>Typical value: ~2.0%.",
-                tooltip_resNetCapitalCost: "The total initial cost of the project, excluding financing.",
-                tooltip_resRte: "The round-trip efficiency of the system, including losses during charging and discharging.",
-                tooltip_resEnergyChargedY1: "The total amount of energy the system will consume from the grid for charging during the first year.",
-                tooltip_resLcoeNominal: "The levelized cost of energy in nominal dollars (not adjusted for inflation).",
-                tooltip_resLcoeReal: "The levelized cost of energy in real dollars (adjusted for inflation).",
-                tooltip_resPpaY1: "The initial selling price of electricity.",
-                tooltip_resLppaNominal: "The levelized (lifetime average) selling price of energy in nominal dollars.",
-                tooltip_resLppaReal: "The levelized (lifetime average) selling price of energy in real dollars.",
-                tooltip_resNpv: "The difference between discounted revenues and costs. A positive value indicates profitability.",
-                tooltip_resIrr: "The discount rate at which the project's NPV equals zero. Shows the expected return on investment.",
-                tooltip_resPaybackYear: "The year in which the project's discounted revenues exceed its discounted costs.",
-                formulasContent: `<div class="formula-item">
-                        <p class="formula-title">Net Capital Cost</p>
-                        <p class="formula-explanation">The total initial investment in the project. Calculated as the product of the specific capital cost and the total system capacity.</p>
-                        <code class="formula-math">CAPEX = System_Capacity (kWh) * Specific_Cost ($/kWh)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Charging Energy (Year 1)</p>
-                        <p class="formula-explanation">The total amount of energy that needs to be purchased from the grid to charge the system during the first year, accounting for losses (RTE).</p>
-                        <code class="formula-math">Charging_Energy = (Discharged_Energy_Year_1) / RTE</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Net Present Value (NPV)</p>
-                        <p class="formula-explanation">NPV is the difference between the present value of future revenues and the present value of costs. It's a key indicator of investment profitability. A project is considered financially viable if NPV > 0.</p>
-                        <code class="formula-math">NPV = Σ [ (Revenues_t - Costs_t) / (1 + r)^t ] - CAPEX</code>
-                        <p class="formula-explanation mt-2">where 't' is the year, and 'r' is the discount rate.</p>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Internal Rate of Return (IRR)</p>
-                        <p class="formula-explanation">IRR is the discount rate at which the project's NPV equals zero. It shows the expected annual return on investment. A project is attractive if its IRR is higher than the cost of capital (discount rate).</p>
-                        <code class="formula-math">0 = Σ [ (Revenues_t - Costs_t) / (1 + IRR)^t ] - CAPEX</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Levelized Cost of Energy (LCOE)</p>
-                        <p class="formula-explanation">LCOE represents the average cost of one unit of energy (kWh or MWh) over the entire lifecycle. It is the break-even point for selling energy.</p>
-                        <code class="formula-math">LCOE = (Sum of Discounted Costs) / (Sum of Discounted Energy)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Levelized PPA Price (LPPA)</p>
-                        <p class="formula-explanation">LPPA is the average selling price of one unit of energy over the entire lifecycle, discounted to its present value.</p>
-                        <code class="formula-math">LPPA = (Sum of Discounted Revenues) / (Sum of Discounted Energy)</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Real vs. Nominal Rate</p>
-                        <p class="formula-explanation">Nominal metrics do not account for inflation, while real metrics do. The real discount rate is used to calculate real LCOE and LPPA.</p>
-                        <code class="formula-math">RealRate = ((1 + NominalRate) / (1 + Inflation)) - 1</code>
-                    </div>
-                    <div class="formula-item">
-                        <p class="formula-title">Discounted Payback Period</p>
-                        <p class="formula-explanation">The year in which the cumulative discounted value of net cash flows (revenues minus costs) first becomes positive.</p>
-                    </div>`,
-                contactsContent: `<p class="mb-2"><strong>Institute of General Energy of NAS of Ukraine</strong></p>
-                    <p>Address: 172 Antonovycha St, Kyiv, 03150, Ukraine</p>
-                    <p>Phone: (096) 852-04-95</p>
-                    <p>Email: bosak_av@nas.gov.ua</p>`
-            }
-        };
-        
-        // --- CORE LOGIC ---
-        
-        function setLanguage(lang) {
-            localStorage.setItem('bess_lang', lang);
-            document.documentElement.lang = lang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(elem => {
-                const key = elem.getAttribute('data-lang-key');
-                if (translations[lang] && translations[lang][key]) {
-                    elem.innerText = translations[lang][key];
-                }
-            });
-            
-             document.querySelectorAll('[data-lang-key-html]').forEach(elem => {
-                const key = elem.getAttribute('data-lang-key-html');
-                if (translations[lang] && translations[lang][key]) {
-                    elem.innerHTML = translations[lang][key];
-                }
-            });
-            
-            document.querySelectorAll('.tooltip-text').forEach(elem => {
-                 const key = elem.getAttribute('data-lang-key');
-                 if (translations[lang] && translations[lang][key]) {
-                    elem.innerHTML = translations[lang][key];
-                }
-            });
-
-            document.getElementById('lang-uk').classList.toggle('active', lang === 'uk');
-            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-            
-            if (lastChartData.years) { // Re-render charts with new labels if data exists
-                updateAllCharts(lang);
-            }
-        }
-
-        function calculateIRR(cashflows, guess = 0.1) {
-            const maxIterations = 100, precision = 1e-7;
-            let rate = guess;
-            for (let i = 0; i < maxIterations; i++) {
-                let npv = 0, derivative = 0;
-                for (let t = 0; t < cashflows.length; t++) {
-                    npv += cashflows[t] / Math.pow(1 + rate, t);
-                    derivative -= t * cashflows[t] / Math.pow(1 + rate, t + 1);
-                }
-                if (Math.abs(derivative) < 1e-10) return NaN; // Avoid division by zero
-                const newRate = rate - npv / derivative;
-                if (Math.abs(newRate - rate) < precision) return newRate;
-                rate = newRate;
-            }
-            return NaN; // Failed to converge
-        }
-        
-        function updateDisplayUnits() {
-            if (!lastRawResults.lcoeNominal) return; 
-            
-            const useMwh = document.getElementById('unitToggle').checked;
-            const unitLabelLcoe = useMwh ? '$/МВт·год' : '¢/кВт·год';
-            const unitLabelPpa = useMwh ? '$/МВт·год' : '¢/кВт·год';
-
-            const formatValue = (value) => {
-                return useMwh ? value.toFixed(2) : (value / 10).toFixed(2);
-            };
-
-            document.getElementById('resLcoeNominalValue').textContent = `${formatValue(lastRawResults.lcoeNominal)} ${unitLabelLcoe}`;
-            document.getElementById('resLcoeRealValue').textContent = `${formatValue(lastRawResults.lcoeReal)} ${unitLabelLcoe}`;
-            document.getElementById('resPpaY1Value').textContent = `${formatValue(lastInputs.ppaPrice)} ${unitLabelPpa}`;
-            document.getElementById('resLppaNominalValue').textContent = `${formatValue(lastRawResults.lppaNominal)} ${unitLabelLcoe}`;
-            document.getElementById('resLppaRealValue').textContent = `${formatValue(lastRawResults.lppaReal)} ${unitLabelLcoe}`;
-        }
-
-        document.getElementById('calculateBtn').addEventListener('click', () => {
-            const inputs = {
-                batteryType: document.getElementById('batteryType').options[document.getElementById('batteryType').selectedIndex].text,
-                powerMW: parseFloat(document.getElementById('systemPower').value),
-                capacityMWh: parseFloat(document.getElementById('systemCapacity').value),
-                rte: parseFloat(document.getElementById('rte').value),
-                dod: parseFloat(document.getElementById('dod').value),
-                cyclesPerYear: parseInt(document.getElementById('cyclesPerYear').value),
-                degradationRate: parseFloat(document.getElementById('degradationRate').value),
-                capexPerKWh: parseFloat(document.getElementById('capex').value),
-                omPerKWYear: parseFloat(document.getElementById('omCost').value),
-                chargingCostPerMWh: parseFloat(document.getElementById('chargingCost').value),
-                replacementCostPercent: parseFloat(document.getElementById('replacementCost').value),
-                replacementYear: parseInt(document.getElementById('replacementYear').value),
-                lifetime: parseInt(document.getElementById('projectLifetime').value),
-                discountRate: parseFloat(document.getElementById('discountRate').value),
-                inflationRate: parseFloat(document.getElementById('inflationRate').value),
-                ppaPrice: parseFloat(document.getElementById('ppaPrice').value),
-                ppaEscalation: parseFloat(document.getElementById('ppaEscalation').value),
-            };
-            lastInputs = inputs;
-
-            const inputsForCalc = { ...inputs };
-            inputsForCalc.rte /= 100;
-            inputsForCalc.dod /= 100;
-            inputsForCalc.degradationRate /= 100;
-            inputsForCalc.replacementCostPercent /= 100;
-            inputsForCalc.discountRate /= 100;
-            inputsForCalc.inflationRate /= 100;
-            inputsForCalc.ppaEscalation /= 100;
-
-            const powerKW = inputsForCalc.powerMW * 1000;
-            const capacityKWh = inputsForCalc.capacityMWh * 1000;
-            const initialCapex = capacityKWh * inputsForCalc.capexPerKWh;
-            const realDiscountRate = ((1 + inputsForCalc.discountRate) / (1 + inputsForCalc.inflationRate)) - 1;
-
-            let totalDiscountedEnergyNominal = 0, totalDiscountedEnergyReal = 0;
-            let totalDiscountedCostNominal = initialCapex, totalDiscountedRevenueNominal = 0;
-            let currentCapacityMWh = inputsForCalc.capacityMWh;
-            let energyChargedY1 = 0, cashFlows = [-initialCapex], paybackYear = "N/A";
-
-            // For charts
-            lastChartData = {
-                years: Array.from({length: inputs.lifetime}, (_, i) => i + 1),
-                annualRevenues: [], annualChargingCosts: [], annualOmCosts: [],
-                annualReplacementCosts: [], cumulativeDiscountedCashFlows: [-initialCapex],
-                annualCapacities: []
-            };
-
-            for (let year = 1; year <= inputsForCalc.lifetime; year++) {
-                if (year === inputsForCalc.replacementYear + 1) currentCapacityMWh = inputsForCalc.capacityMWh;
-                lastChartData.annualCapacities.push(currentCapacityMWh);
-
-                const energyDischargedMWh = currentCapacityMWh * inputsForCalc.dod * inputsForCalc.cyclesPerYear;
-                const energyChargedMWh = energyDischargedMWh / inputsForCalc.rte;
-                if (year === 1) energyChargedY1 = energyChargedMWh;
-                
-                const costOfCharging = energyChargedMWh * inputsForCalc.chargingCostPerMWh;
-                const costOM = powerKW * inputsForCalc.omPerKWYear;
-                const costReplacement = (year === inputsForCalc.replacementYear) ? (initialCapex * inputsForCalc.replacementCostPercent) : 0;
-                const totalAnnualCost = costOfCharging + costOM + costReplacement;
-                
-                const currentPpaPrice = inputsForCalc.ppaPrice * Math.pow(1 + inputsForCalc.ppaEscalation, year - 1);
-                const annualRevenue = energyDischargedMWh * currentPpaPrice;
-                const annualNetCashFlow = annualRevenue - totalAnnualCost;
-                cashFlows.push(annualNetCashFlow);
-
-                const prevCumulative = lastChartData.cumulativeDiscountedCashFlows[lastChartData.cumulativeDiscountedCashFlows.length - 1];
-                const currentCumulative = prevCumulative + annualNetCashFlow / Math.pow(1 + inputsForCalc.discountRate, year);
-                lastChartData.cumulativeDiscountedCashFlows.push(currentCumulative);
-
-                if (currentCumulative > 0 && paybackYear === "N/A") paybackYear = year;
-                
-                const discountFactorNominal = Math.pow(1 + inputsForCalc.discountRate, year);
-                const discountFactorReal = Math.pow(1 + realDiscountRate, year);
-                totalDiscountedCostNominal += totalAnnualCost / discountFactorNominal;
-                totalDiscountedRevenueNominal += annualRevenue / discountFactorNominal;
-                totalDiscountedEnergyNominal += energyDischargedMWh / discountFactorNominal;
-                totalDiscountedEnergyReal += energyDischargedMWh / discountFactorReal;
-                
-                lastChartData.annualRevenues.push(annualRevenue);
-                lastChartData.annualChargingCosts.push(-costOfCharging);
-                lastChartData.annualOmCosts.push(-costOM);
-                lastChartData.annualReplacementCosts.push(-costReplacement);
-
-                currentCapacityMWh *= (1 - inputsForCalc.degradationRate);
-            }
-
-            lastRawResults.lcoeNominal = totalDiscountedCostNominal / totalDiscountedEnergyNominal;
-            lastRawResults.lcoeReal = totalDiscountedCostNominal / totalDiscountedEnergyReal;
-            lastRawResults.lppaNominal = totalDiscountedRevenueNominal / totalDiscountedEnergyNominal;
-            lastRawResults.lppaReal = totalDiscountedRevenueNominal / totalDiscountedEnergyReal;
-            const npv = totalDiscountedRevenueNominal - totalDiscountedCostNominal;
-            const irr = calculateIRR(cashFlows);
-
-            const formatInt = (num) => Math.round(num).toLocaleString('uk-UA');
-            
-            document.getElementById('resNetCapitalCostValue').textContent = `$${formatInt(initialCapex)}`;
-            document.getElementById('resRteValue').textContent = `${(inputs.rte).toFixed(0)}%`;
-            document.getElementById('resEnergyChargedY1Value').textContent = `${formatInt(energyChargedY1)} МВт·год`;
-            document.getElementById('resNpvValue').textContent = `$${formatInt(npv)}`;
-            document.getElementById('resIrrValue').textContent = `${(irr * 100).toFixed(2)}%`;
-            document.getElementById('resPaybackYearValue').textContent = paybackYear;
-            
-            updateDisplayUnits(); 
-            const currentLang = localStorage.getItem('bess_lang') || 'uk';
-            updateAllCharts(currentLang);
-
-            document.getElementById('results').classList.remove('hidden');
-            document.getElementById('exportBtn').classList.remove('hidden');
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        });
-        
-        // --- EVENT LISTENERS ---
-        document.getElementById('unitToggle').addEventListener('change', updateDisplayUnits);
-        document.getElementById('lang-uk').addEventListener('click', () => setLanguage('uk'));
-        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-
-        // --- CHARTING FUNCTIONS ---
-        function updateAllCharts(lang) {
-            updateCashflowChart(lang);
-            updateDegradationChart(lang);
-            updateCumulativeNpvChart(lang);
-        }
-
-        function updateCashflowChart(lang) {
-            const ctx = document.getElementById('cashflowChart').getContext('2d');
-            if (cashflowChart) cashflowChart.destroy();
-            cashflowChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: lastChartData.years,
-                    datasets: [
-                        { label: translations[lang].chart_revenue, data: lastChartData.annualRevenues, backgroundColor: '#107c10' },
-                        { label: translations[lang].chart_chargingCost, data: lastChartData.annualChargingCosts, backgroundColor: '#0078d4' },
-                        { label: translations[lang].chart_omCost, data: lastChartData.annualOmCosts, backgroundColor: '#ffb900' },
-                        { label: translations[lang].chart_replacementCost, data: lastChartData.annualReplacementCosts, backgroundColor: '#d83b01' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: { mode: 'index' }
-                    },
-                    scales: {
-                        x: { stacked: true, title: { display: true, text: translations[lang].chart_year, font: { family: 'Segoe UI' } } },
-                        y: { stacked: true, title: { display: true, text: `${translations[lang].chart_value} ($)`, font: { family: 'Segoe UI' } } }
-                    }
-                }
-            });
-        }
-        
-        function updateDegradationChart(lang) {
-            const ctx = document.getElementById('degradationChart').getContext('2d');
-            if(degradationChart) degradationChart.destroy();
-            degradationChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: lastChartData.years,
-                    datasets: [{
-                        label: `${translations[lang].chart_capacity} (МВт·год)`,
-                        data: lastChartData.annualCapacities,
-                        borderColor: '#0078d4',
-                        backgroundColor: 'rgba(0, 120, 212, 0.1)',
-                        fill: true,
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                     responsive: true,
-                     scales: {
-                        x: { title: { display: true, text: translations[lang].chart_year, font: { family: 'Segoe UI' } } },
-                        y: { title: { display: true, text: `${translations[lang].chart_capacity} (МВт·год)`, font: { family: 'Segoe UI' } } }
-                    }
-                }
-            });
-        }
-
-        function updateCumulativeNpvChart(lang) {
-            const ctx = document.getElementById('cumulativeNpvChart').getContext('2d');
-            if(cumulativeNpvChart) cumulativeNpvChart.destroy();
-            cumulativeNpvChart = new Chart(ctx, {
-                type: 'line',
-                 data: {
-                    labels: [0, ...lastChartData.years],
-                    datasets: [{
-                        label: translations[lang].chart_cumulative_npv,
-                        data: lastChartData.cumulativeDiscountedCashFlows,
-                        borderColor: '#107c10',
-                        backgroundColor: (context) => {
-                            const chart = context.chart;
-                            const { ctx, chartArea } = chart;
-                            if (!chartArea) return null;
-                            const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-                            const zero = chart.scales.y.getPixelForValue(0);
-                            const top = chart.scales.y.getPixelForValue(Math.max(...lastChartData.cumulativeDiscountedCashFlows));
-                            const bottom = chart.scales.y.getPixelForValue(Math.min(...lastChartData.cumulativeDiscountedCashFlows));
-
-                            const range = bottom - top;
-                            if (range <= 0) return 'rgba(16, 124, 16, 0.1)';
-
-                            const zeroPoint = (bottom - zero) / range;
-                            
-                            gradient.addColorStop(0, 'rgba(216, 59, 1, 0.3)');
-                            if (zeroPoint > 0 && zeroPoint < 1) {
-                                gradient.addColorStop(zeroPoint, 'rgba(216, 59, 1, 0.1)');
-                                gradient.addColorStop(zeroPoint, 'rgba(16, 124, 16, 0.1)');
-                            }
-                            gradient.addColorStop(1, 'rgba(16, 124, 16, 0.3)');
-
-                            return gradient;
-                        },
-                        fill: true,
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                         annotation: {
-                            annotations: {
-                                line1: {
-                                    type: 'line',
-                                    yMin: 0,
-                                    yMax: 0,
-                                    borderColor: 'rgb(50, 50, 50)',
-                                    borderWidth: 1,
-                                    borderDash: [6, 6]
-                                }
-                            }
-                        }
-                    },
-                     scales: {
-                        x: { title: { display: true, text: translations[lang].chart_year, font: { family: 'Segoe UI' } } },
-                        y: { title: { display: true, text: `${translations[lang].chart_value} ($)`, font: { family: 'Segoe UI' } } }
-                    }
-                }
-            });
-        }
-
-        document.getElementById('exportBtn').addEventListener('click', () => {
-            if (!lastInputs || !lastRawResults.lcoeNominal) { alert("Будь ласка, спочатку виконайте розрахунок."); return; }
-            
-            const useMwh = document.getElementById('unitToggle').checked;
-            const unitLabel = useMwh ? '$/МВт·год' : '¢/кВт·год';
-            const formatValue = (value) => useMwh ? value.toFixed(2) : (value / 10).toFixed(2);
-            
-            const inputsData = [
-                { "Параметр": "Тип батареї", "Значення": lastInputs.batteryType }, { "Параметр": "Потужність системи (МВт)", "Значення": lastInputs.powerMW },
-                { "Параметр": "Ємність системи (МВт·год)", "Значення": lastInputs.capacityMWh }, { "Параметр": "ККД повного циклу (%)", "Значення": lastInputs.rte },
-                { "Параметр": "Глибина розряду (%)", "Значення": lastInputs.dod }, { "Параметр": "Кількість циклів на рік", "Значення": lastInputs.cyclesPerYear },
-                { "Параметр": "Річна деградація ємності (%)", "Значення": lastInputs.degradationRate }, { "Параметр": "Капітальні витрати ($/кВт·год)", "Значення": lastInputs.capexPerKWh },
-                { "Параметр": "Фіксовані витрати на O&M ($/кВт-рік)", "Значення": lastInputs.omPerKWYear }, { "Параметр": "Вартість енергії для зарядки ($/МВт·год)", "Значення": lastInputs.chargingCostPerMWh },
-                { "Параметр": "Вартість заміни (% від CAPEX)", "Значення": lastInputs.replacementCostPercent }, { "Параметр": "Рік заміни", "Значення": lastInputs.replacementYear },
-                { "Параметр": "Термін служби проєкту (Років)", "Значення": lastInputs.lifetime }, { "Параметр": "Ставка дисконтування (%)", "Значення": lastInputs.discountRate },
-                { "Параметр": "Рівень інфляції (%)", "Значення": lastInputs.inflationRate }, { "Параметр": "Ціна продажу (PPA), Рік 1 ($/МВт·год)", "Значення": lastInputs.ppaPrice },
-                { "Параметр": "Індексація PPA (% / рік)", "Значення": lastInputs.ppaEscalation },
-            ];
-            const inputs_ws = XLSX.utils.json_to_sheet(inputsData);
-            const resultsData = [
-                { "Метрика": "Чисті капітальні витрати", "Значення": document.getElementById('resNetCapitalCostValue').textContent }, 
-                { "Метрика": "ККД повного циклу", "Значення": document.getElementById('resRteValue').textContent },
-                { "Метрика": "Зарядка від мережі (Рік 1)", "Значення": document.getElementById('resEnergyChargedY1Value').textContent }, 
-                { "Метрика": `LCOE (номінальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lcoeNominal) },
-                { "Метрика": `LCOE (реальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lcoeReal) }, 
-                { "Метрика": `Ціна PPA (Рік 1), ${unitLabel}`, "Значення": formatValue(lastInputs.ppaPrice) },
-                { "Метрика": `LPPA (номінальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lppaNominal) }, 
-                { "Метрика": `LPPA (реальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lppaReal) },
-                { "Метрика": "Чиста приведена вартість (NPV)", "Значення": document.getElementById('resNpvValue').textContent }, 
-                { "Метрика": "Внутрішня норма дохідності (IRR)", "Значення": document.getElementById('resIrrValue').textContent },
-                { "Метрика": "Рік досягнення IRR (окупність)", "Значення": document.getElementById('resPaybackYearValue').textContent },
-            ];
-            const results_ws = XLSX.utils.json_to_sheet(resultsData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, inputs_ws, "Вхідні дані");
-            XLSX.utils.book_append_sheet(wb, results_ws, "Результати");
-            XLSX.writeFile(wb, "BESS_Calculation_Results.xlsx");
-        });
-
-        const menuToggle = document.getElementById('menu-toggle');
-        const sideMenu = document.getElementById('side-menu');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pages = document.querySelectorAll('.page-content');
-
-        menuToggle.addEventListener('click', () => {
-            sideMenu.classList.toggle('open');
-        });
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = e.target.getAttribute('data-target');
-                
-                pages.forEach(page => {
-                    if (page.id === targetId) {
-                        page.classList.remove('hidden');
-                    } else {
-                        page.classList.add('hidden');
-                    }
-                });
-                sideMenu.classList.remove('open');
-            });
-        });
-
-        // Initialize with default values and language
-        const savedLang = localStorage.getItem('bess_lang') || 'uk';
-        setLanguage(savedLang);
-        const event = new Event('change');
-        batteryTypeSelector.dispatchEvent(event);
-        
-    }
-    </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
+
