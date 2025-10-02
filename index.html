@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор LCOE для BESS</title>
+    <title>Калькулятор усередненої вартості електроенергії (LCOE) для установок зберігання енергії (BESS)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -48,14 +48,13 @@
             align-items: center; justify-content: center; cursor: help;
         }
         .tooltip-text {
-            visibility: hidden; width: 250px; background-color: #333; color: #fff;
-            text-align: center; border-radius: 2px; padding: 8px; position: absolute;
-            z-index: 10; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0;
+            visibility: hidden; width: 280px; background-color: #333; color: #fff;
+            text-align: left; border-radius: 2px; padding: 8px; position: absolute;
+            z-index: 10; bottom: 125%; left: 50%; margin-left: -140px; opacity: 0;
             transition: opacity 0.3s; font-size: 12px; font-weight: 400;
         }
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        /* Navigation Styles */
         #side-menu {
             transition: transform 0.3s ease-in-out;
             transform: translateX(-100%);
@@ -64,40 +63,36 @@
             transform: translateX(0);
         }
         .formula-item {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e0e0e0;
         }
-        .formula-item:last-child {
-            border-bottom: none;
-        }
-        .formula-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #005a9e;
-        }
-        .formula-explanation {
-            font-size: 0.9rem;
-            color: #333;
-            margin-top: 0.5rem;
-        }
+        .formula-item:last-child { border-bottom: none; }
+        .formula-title { font-size: 1.1rem; font-weight: 600; color: #005a9e; }
+        .formula-explanation { font-size: 0.9rem; color: #333; margin-top: 0.5rem; }
         .formula-math {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #f0f0f0;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            display: block;
-            white-space: pre-wrap;
-            font-size: 14px;
+            font-family: 'Courier New', Courier, monospace; background-color: #f0f0f0; padding: 0.5rem;
+            margin-top: 0.5rem; display: block; white-space: pre-wrap; font-size: 14px;
         }
+        
+        /* Unit Switch Styles */
+        .unit-switch-container { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 1rem; }
+        .unit-switch { position: relative; display: inline-block; width: 110px; height: 28px; }
+        .unit-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e1e1e1; transition: .4s; border: 1px solid #adadad;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 48px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s;
+        }
+        input:checked + .slider { background-color: #0078d4; }
+        input:checked + .slider:before { transform: translateX(55px); }
+        .switch-label { margin: 0 8px; font-size: 14px; color: #333; }
     </style>
 </head>
 <body class="text-gray-900">
-    <!-- Side Menu -->
     <div id="side-menu" class="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white z-20 shadow-lg">
-        <div class="p-4">
-            <h2 class="text-xl font-semibold">Меню</h2>
-        </div>
+        <div class="p-4"> <h2 class="text-xl font-semibold">Меню</h2> </div>
         <nav>
             <a href="#" data-target="calculator-page" class="nav-link block py-2.5 px-4 hover:bg-gray-700">Калькулятор</a>
             <a href="#" data-target="formulas-page" class="nav-link block py-2.5 px-4 hover:bg-gray-700">Формули</a>
@@ -105,7 +100,7 @@
         </nav>
     </div>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
         <header class="text-left mb-6 flex items-center">
             <button id="menu-toggle" class="p-2 mr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,16 +109,13 @@
             </button>
             <div>
                 <p class="text-sm text-gray-600">Інститут загальної енергетики НАН України</p>
-                <h1 class="text-3xl font-light text-gray-900 mt-1">Калькулятор LCOE для BESS</h1>
+                <h1 class="text-2xl font-light text-gray-900 mt-1">Калькулятор усередненої вартості електроенергії (LCOE) для установок зберігання енергії (BESS)</h1>
             </div>
         </header>
 
-        <!-- Main Content Area -->
         <main>
-            <!-- Calculator Page -->
             <div id="calculator-page" class="page-content win-card p-6 sm:p-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Technical Parameters -->
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2">Технічні параметри</h2>
                         <div class="input-group">
@@ -132,47 +124,47 @@
                                 <option value="nmc">NMC (Збалансований)</option>
                                 <option value="lfp">LFP (Довговічний)</option>
                                 <option value="nca">NCA (Високоенергетичний)</option>
-                                <option value="lto">LTO (Надвисокий ресурс)</option>
+                                <option value="li-ion">Li-ion (Високий ресурс)</option>
                                 <option value="na-ion">Na-ion (Перспективний)</option>
                             </select>
                         </div>
                         <div class="input-group">
-                            <label for="systemPower" class="input-label">Потужність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Максимальна потужність (швидкість), з якою система може заряджатися або розряджатися.</span></span></label>
-                            <div class="relative"><input type="number" id="systemPower" class="input-field pr-14" value="1"><span class="unit">МВт</span></div>
+                            <label for="systemPower" class="input-label">Потужність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Максимальна потужність, з якою система може заряджатися/розряджатися.<br><br>Типовий діапазон: 50 - 100 МВт.</span></span></label>
+                            <div class="relative"><input type="number" id="systemPower" class="input-field pr-14" value="50"><span class="unit">МВт</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="systemCapacity" class="input-label">Ємність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Загальна кількість енергії, яку може зберігати батарея.</span></span></label>
-                            <div class="relative"><input type="number" id="systemCapacity" class="input-field pr-20" value="4"><span class="unit">МВт·год</span></div>
+                            <label for="systemCapacity" class="input-label">Ємність системи <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Загальна кількість енергії, яку може зберігати батарея.<br><br>Типовий діапазон: 200 - 400 МВт·год (для 4-годинних систем).</span></span></label>
+                            <div class="relative"><input type="number" id="systemCapacity" class="input-field pr-20" value="200"><span class="unit">МВт·год</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="rte" class="input-label">ККД повного циклу (RTE) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку. Враховує втрати.</span></span></label>
+                            <label for="rte" class="input-label">ККД повного циклу (RTE) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Відсоток енергії, що повертається під час розрядки, відносно енергії, витраченої на зарядку.<br><br>Типовий діапазон: 88% - 91%.</span></span></label>
                             <div class="relative"><input type="number" id="rte" class="input-field pr-12" value="88"><span class="unit">%</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="dod" class="input-label">Глибина розряду (DoD) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Відсоток від повної ємності, що використовується в кожному циклі. Менший DoD подовжує термін служби батареї.</span></span></label>
+                            <label for="dod" class="input-label">Глибина розряду (DoD) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Відсоток від повної ємності, що використовується в кожному циклі.<br><br>Типове значення: 90%.</span></span></label>
                             <div class="relative"><input type="number" id="dod" class="input-field pr-12" value="90"><span class="unit">%</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="cyclesPerYear" class="input-label">Кількість циклів на рік <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Очікувана кількість повних циклів заряду-розряду протягом року.</span></span></label>
-                            <div class="relative"><input type="number" id="cyclesPerYear" class="input-field pr-20" value="365"><span class="unit">циклів</span></div>
+                            <label for="cyclesPerYear" class="input-label">Кількість циклів на рік <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Очікувана кількість повних циклів заряду-розряду протягом року.<br><br>Типове значення: 350.</span></span></label>
+                            <div class="relative"><input type="number" id="cyclesPerYear" class="input-field pr-20" value="350"><span class="unit">циклів</span></div>
                         </div>
                          <div class="input-group">
-                            <label for="degradationRate" class="input-label">Річна деградація ємності <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Відсоток втрати максимальної ємності батареї щороку через зношення.</span></span></label>
+                            <label for="degradationRate" class="input-label">Річна деградація ємності <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Відсоток втрати максимальної ємності батареї щороку через зношення.<br><br>Типове значення: ~2.6%.</span></span></label>
                             <div class="relative"><input type="number" id="degradationRate" class="input-field pr-12" value="1.5"><span class="unit">%</span></div>
                         </div>
                     </section>
                     <section>
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2">Параметри витрат</h2>
                         <div class="input-group">
-                            <label for="capex" class="input-label">Капітальні витрати (CAPEX) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію, розраховані на одиницю ємності.</span></span></label>
-                            <div class="relative"><input type="number" id="capex" class="input-field pr-24" value="420"><span class="unit">$/кВт·год</span></div>
+                            <label for="capex" class="input-label">Капітальні витрати (CAPEX) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Початкові інвестиційні витрати на обладнання, монтаж та введення в експлуатацію.<br><br>Типовий діапазон (storage): $249 - $421/кВт·год.</span></span></label>
+                            <div class="relative"><input type="number" id="capex" class="input-field pr-24" value="350"><span class="unit">$/кВт·год</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="omCost" class="input-label">Фіксовані витрати на O&M <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Щорічні витрати на обслуговування, моніторинг та страхування, розраховані на одиницю потужності.</span></span></label>
+                            <label for="omCost" class="input-label">Фіксовані витрати на O&M <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Щорічні витрати на обслуговування, моніторинг та страхування.<br><br>Типовий діапазон (PV): $11 - $14/кВт-рік.</span></span></label>
                             <div class="relative"><input type="number" id="omCost" class="input-field pr-24" value="12"><span class="unit">$/кВт-рік</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="chargingCost" class="input-label">Вартість енергії для зарядки <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Середня ціна, за якою система купує електроенергію з мережі для зарядки.</span></span></label>
+                            <label for="chargingCost" class="input-label">Вартість енергії для зарядки <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Середня ціна, за якою система купує електроенергію з мережі для зарядки.<br><br>Типове значення (standalone): ~$51/МВт·год.</span></span></label>
                             <div class="relative"><input type="number" id="chargingCost" class="input-field pr-24" value="40"><span class="unit">$/МВт·год</span></div>
                         </div>
                         <div class="input-group">
@@ -180,7 +172,7 @@
                              <div class="relative"><input type="number" id="replacementCost" class="input-field pr-24" value="60"><span class="unit">% від CAPEX</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="replacementYear" class="input-label">Рік заміни <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Рік, у якому планується провести повну заміну акумуляторних модулів.</span></span></label>
+                            <label for="replacementYear" class="input-label">Рік заміни <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Рік, у якому планується провести повну заміну акумуляторних модулів. Модель Lazard використовує "аугментацію" замість повної заміни.</span></span></label>
                             <div class="relative"><input type="number" id="replacementYear" class="input-field pr-14" value="12"><span class="unit">Рік</span></div>
                         </div>
                     </section>
@@ -188,22 +180,22 @@
                         <h2 class="text-xl font-light mb-4 border-b border-gray-300 pb-2">Фінансові параметри</h2>
                         <div class="input-group">
                             <label for="ppaPrice" class="input-label">Ціна продажу (PPA), Рік 1 <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Ціна, за якою система продає 1 МВт·год енергії в перший рік роботи.</span></span></label>
-                            <div class="relative"><input type="number" id="ppaPrice" class="input-field pr-24" value="250"><span class="unit">$/МВт·год</span></div>
+                            <div class="relative"><input type="number" id="ppaPrice" class="input-field pr-24" value="200"><span class="unit">$/МВт·год</span></div>
                         </div>
                         <div class="input-group">
                             <label for="ppaEscalation" class="input-label">Індексація PPA <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Щорічне зростання ціни продажу енергії (PPA) для врахування інфляції або ринкових умов.</span></span></label>
                             <div class="relative"><input type="number" id="ppaEscalation" class="input-field pr-16" value="2"><span class="unit">% / рік</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="projectLifetime" class="input-label">Термін служби проєкту <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.</span></span></label>
+                            <label for="projectLifetime" class="input-label">Термін служби проєкту <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Загальний період, протягом якого проєкт буде експлуатуватися та аналізуватися.<br><br>Типове значення: 20 років.</span></span></label>
                             <div class="relative"><input type="number" id="projectLifetime" class="input-field pr-16" value="20"><span class="unit">Років</span></div>
                         </div>
                         <div class="input-group">
-                            <label for="discountRate" class="input-label">Ставка дисконтування <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості. Відображає вартість капіталу та ризики.</span></span></label>
+                            <label for="discountRate" class="input-label">Ставка дисконтування <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Норма дохідності для приведення майбутніх грошових потоків до їхньої сьогоднішньої вартості.<br><br>Типовий діапазон (WACC): 4.2% - 10.0%.</span></span></label>
                             <div class="relative"><input type="number" id="discountRate" class="input-field pr-12" value="7.5"><span class="unit">%</span></div>
                         </div>
                          <div class="input-group">
-                            <label for="inflationRate" class="input-label">Рівень інфляції <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Середньорічний темп знецінення грошей, що використовується для розрахунку реальних (з поправкою на інфляцію) показників.</span></span></label>
+                            <label for="inflationRate" class="input-label">Рівень інфляції <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Середньорічний темп знецінення грошей, що використовується для розрахунку реальних показників.<br><br>Типове значення: ~2.0%.</span></span></label>
                             <div class="relative"><input type="number" id="inflationRate" class="input-field pr-12" value="2.5"><span class="unit">%</span></div>
                         </div>
                     </section>
@@ -213,7 +205,17 @@
                     <button id="calculateBtn" class="win-button win-button-primary">Розрахувати</button>
                 </div>
                 <section id="results" class="mt-10 hidden">
-                     <h2 class="text-2xl font-light mb-6">Результати моделювання</h2>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-light">Результати моделювання</h2>
+                        <div class="unit-switch-container">
+                             <span class="switch-label">¢/кВт·год</span>
+                             <label class="unit-switch">
+                                 <input type="checkbox" id="unitToggle">
+                                 <span class="slider"></span>
+                             </label>
+                             <span class="switch-label">$/МВт·год</span>
+                        </div>
+                    </div>
                      <div class="win-card p-6">
                         <table class="result-table">
                             <tbody>
@@ -221,12 +223,12 @@
                                 <tr><td>ККД повного циклу <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Ефективність системи 'туди-назад', враховуючи втрати при заряді та розряді.</span></span></td><td id="resRte">0%</td></tr>
                                 <tr><td>Зарядка від мережі (Рік 1) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Загальна кількість енергії, яку система споживе з мережі для зарядки протягом першого року.</span></span></td><td id="resEnergyChargedY1">0 МВт·год</td></tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td>LCOE (номінальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).</span></span></td><td id="resLcoeNominal">0.00 ¢/кВт·год</td></tr>
-                                <tr><td>LCOE (реальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).</span></span></td><td id="resLcoeReal">0.00 ¢/кВт·год</td></tr>
+                                <tr><td>LCOE (номінальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована вартість енергії в номінальних доларах (без поправки на інфляцію).</span></span></td><td id="resLcoeNominal">0.00</td></tr>
+                                <tr><td>LCOE (реальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована вартість енергії в реальних доларах (з поправкою на інфляцію).</span></span></td><td id="resLcoeReal">0.00</td></tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
-                                <tr><td>Ціна PPA (Рік 1) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Початкова ціна продажу електроенергії, перерахована в центах за кіловат-годину.</span></span></td><td id="resPpaY1">0.00 ¢/кВт·год</td></tr>
-                                <tr><td>LPPA (номінальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.</span></span></td><td id="resLppaNominal">0.00 ¢/кВт·год</td></tr>
-                                <tr><td>LPPA (реальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.</span></span></td><td id="resLppaReal">0.00 ¢/кВт·год</td></tr>
+                                <tr><td>Ціна PPA (Рік 1) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Початкова ціна продажу електроенергії.</span></span></td><td id="resPpaY1">0.00</td></tr>
+                                <tr><td>LPPA (номінальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована (усереднена за весь термін) ціна продажу енергії в номінальних доларах.</span></span></td><td id="resLppaNominal">0.00</td></tr>
+                                <tr><td>LPPA (реальний) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Нормована (усереднена за весь термін) ціна продажу енергії в реальних доларах.</span></span></td><td id="resLppaReal">0.00</td></tr>
                                 <tr><td colspan="2" class="!py-4"></td></tr>
                                 <tr><td>Чиста приведена вартість (NPV) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Різниця між дисконтованими доходами та витратами. Позитивне значення вказує на прибутковість.</span></span></td><td id="resNpv">$0</td></tr>
                                 <tr><td>Внутрішня норма дохідності (IRR) <span class="tooltip-container"><span class="tooltip-icon">?</span><span class="tooltip-text">Ставка дисконтування, за якої NPV проєкту дорівнює нулю. Показує очікувану дохідність інвестицій.</span></span></td><td id="resIrr">0.00%</td></tr>
@@ -241,60 +243,50 @@
                 </section>
             </div>
 
-            <!-- Formulas Page -->
             <div id="formulas-page" class="page-content hidden win-card p-6 sm:p-8">
                 <h2 class="text-2xl font-light mb-6">Використані формули та метрики</h2>
-                
                 <div class="formula-item">
                     <p class="formula-title">Чисті капітальні витрати (Net Capital Cost)</p>
                     <p class="formula-explanation">Загальні початкові інвестиції в проєкт. Розраховуються як добуток питомих капітальних витрат на загальну ємність системи.</p>
                     <code class="formula-math">CAPEX = Ємність_системи (кВт·год) * Питомі_витрати ($/кВт·год)</code>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Енергія для зарядки (Рік 1)</p>
                     <p class="formula-explanation">Загальна кількість енергії, яку потрібно закупити з мережі для зарядки системи протягом першого року, з урахуванням втрат (ККД).</p>
                     <code class="formula-math">Енергія_зарядки = (Енергія_розрядки_рік_1) / ККД</code>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Чиста приведена вартість (NPV)</p>
                     <p class="formula-explanation">NPV — це різниця між сьогоднішньою вартістю майбутніх доходів та сьогоднішньою вартістю витрат. Це ключовий показник прибутковості інвестицій. Проєкт вважається фінансово доцільним, якщо NPV > 0.</p>
                     <code class="formula-math">NPV = Σ [ (Доходи_t - Витрати_t) / (1 + r)^t ] - CAPEX</code>
                     <p class="formula-explanation mt-2">де 't' - рік, 'r' - ставка дисконтування.</p>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Внутрішня норма дохідності (IRR)</p>
                     <p class="formula-explanation">IRR — це ставка дисконтування, за якої NPV проєкту дорівнює нулю. Вона показує очікувану річну дохідність інвестицій. Проєкт привабливий, якщо IRR вища за вартість капіталу (ставку дисконтування).</p>
                     <code class="formula-math">0 = Σ [ (Доходи_t - Витрати_t) / (1 + IRR)^t ] - CAPEX</code>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Нормована вартість енергії (LCOE)</p>
                     <p class="formula-explanation">LCOE представляє середню собівартість однієї одиниці енергії (кВт·год або МВт·год) за весь життєвий цикл. Це точка беззбитковості для продажу енергії.</p>
                     <code class="formula-math">LCOE = (Сума дисконтованих витрат) / (Сума дисконтованої енергії)</code>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Нормована ціна договору (LPPA)</p>
                     <p class="formula-explanation">LPPA — це середня ціна продажу однієї одиниці енергії за весь життєвий цикл, приведена до сьогоднішньої вартості.</p>
                     <code class="formula-math">LPPA = (Сума дисконтованих доходів) / (Сума дисконтованої енергії)</code>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Реальна та номінальна ставка</p>
                     <p class="formula-explanation">Номінальні показники не враховують інфляцію, тоді як реальні її враховують. Реальна ставка дисконтування використовується для розрахунку реальних LCOE та LPPA.</p>
                     <code class="formula-math">РеальнаСтавка = ((1 + НомінальнаСтавка) / (1 + Інфляція)) - 1</code>
                 </div>
-
                 <div class="formula-item">
                     <p class="formula-title">Дисконтований період окупності</p>
                     <p class="formula-explanation">Рік, у якому кумулятивна (накопичена) дисконтована вартість чистих грошових потоків (доходи мінус витрати) вперше стає додатною.</p>
                 </div>
             </div>
 
-            <!-- Contacts Page -->
             <div id="contacts-page" class="page-content hidden win-card p-6 sm:p-8">
                 <h2 class="text-2xl font-light mb-6">Контакти</h2>
                 <p class="mb-2"><strong>Інститут загальної енергетики НАН України</strong></p>
@@ -309,12 +301,13 @@
         let dailyChart = null;
         let lastInputs = null;
         let lastResults = null;
+        let lastRawResults = {}; // Store raw numerical results
 
         const batteryPresets = {
             nmc: { rte: 88, degradationRate: 1.5 },
             lfp: { rte: 93, degradationRate: 1.0 },
             nca: { rte: 90, degradationRate: 1.8 },
-            lto: { rte: 92, degradationRate: 0.5 },
+            'li-ion': { rte: 90, degradationRate: 1.6 },
             'na-ion': { rte: 85, degradationRate: 1.2 }
         };
 
@@ -342,6 +335,24 @@
                 rate = newRate;
             }
             return rate;
+        }
+        
+        function updateDisplayUnits() {
+            if (!lastRawResults.lcoeNominal) return; // No results to update
+            
+            const useMwh = document.getElementById('unitToggle').checked;
+            const unitLabelLcoe = useMwh ? '$/МВт·год' : '¢/кВт·год';
+            const unitLabelPpa = useMwh ? '$/МВт·год' : '¢/кВт·год';
+
+            const formatValue = (value) => {
+                return useMwh ? value.toFixed(2) : (value / 10).toFixed(2);
+            };
+
+            document.getElementById('resLcoeNominal').textContent = `${formatValue(lastRawResults.lcoeNominal)} ${unitLabelLcoe}`;
+            document.getElementById('resLcoeReal').textContent = `${formatValue(lastRawResults.lcoeReal)} ${unitLabelLcoe}`;
+            document.getElementById('resPpaY1').textContent = `${formatValue(lastInputs.ppaPrice)} ${unitLabelPpa}`;
+            document.getElementById('resLppaNominal').textContent = `${formatValue(lastRawResults.lppaNominal)} ${unitLabelLcoe}`;
+            document.getElementById('resLppaReal').textContent = `${formatValue(lastRawResults.lppaReal)} ${unitLabelLcoe}`;
         }
 
         document.getElementById('calculateBtn').addEventListener('click', () => {
@@ -409,52 +420,61 @@
                 currentCapacityMWh *= (1 - inputsForCalc.degradationRate);
             }
 
-            const lcoeNominal = totalDiscountedCostNominal / totalDiscountedEnergyNominal;
-            const lcoeReal = totalDiscountedCostNominal / totalDiscountedEnergyReal;
-            const lppaNominal = totalDiscountedRevenueNominal / totalDiscountedEnergyNominal;
-            const lppaReal = totalDiscountedRevenueNominal / totalDiscountedEnergyReal;
+            lastRawResults.lcoeNominal = totalDiscountedCostNominal / totalDiscountedEnergyNominal;
+            lastRawResults.lcoeReal = totalDiscountedCostNominal / totalDiscountedEnergyReal;
+            lastRawResults.lppaNominal = totalDiscountedRevenueNominal / totalDiscountedEnergyNominal;
+            lastRawResults.lppaReal = totalDiscountedRevenueNominal / totalDiscountedEnergyReal;
             const npv = totalDiscountedRevenueNominal - totalDiscountedCostNominal;
             const irr = calculateIRR(cashFlows);
 
             const formatInt = (num) => Math.round(num).toLocaleString('uk-UA');
-            const toCentsPerKWh = (val) => (val / 10).toFixed(2);
-
+            
             document.getElementById('resNetCapitalCost').textContent = `$${formatInt(initialCapex)}`;
             document.getElementById('resRte').textContent = `${(inputs.rte).toFixed(0)}%`;
             document.getElementById('resEnergyChargedY1').textContent = `${formatInt(energyChargedY1)} МВт·год`;
-            document.getElementById('resLcoeNominal').textContent = `${toCentsPerKWh(lcoeNominal)} ¢/кВт·год`;
-            document.getElementById('resLcoeReal').textContent = `${toCentsPerKWh(lcoeReal)} ¢/кВт·год`;
-            document.getElementById('resPpaY1').textContent = `${toCentsPerKWh(inputs.ppaPrice)} ¢/кВт·год`;
-            document.getElementById('resLppaNominal').textContent = `${toCentsPerKWh(lppaNominal)} ¢/кВт·год`;
-            document.getElementById('resLppaReal').textContent = `${toCentsPerKWh(lppaReal)} ¢/кВт·год`;
             document.getElementById('resNpv').textContent = `$${formatInt(npv)}`;
             document.getElementById('resIrr').textContent = `${(irr * 100).toFixed(2)}%`;
             document.getElementById('resPaybackYear').textContent = paybackYear;
             
-            lastResults = {
-                netCapitalCost: `$${formatInt(initialCapex)}`, rte: `${(inputs.rte).toFixed(0)}%`, energyChargedY1: `${formatInt(energyChargedY1)} МВт·год`,
-                lcoeNominal: `${toCentsPerKWh(lcoeNominal)} ¢/кВт·год`, lcoeReal: `${toCentsPerKWh(lcoeReal)} ¢/кВт·год`,
-                ppaY1: `${toCentsPerKWh(inputs.ppaPrice)} ¢/кВт·год`, lppaNominal: `${toCentsPerKWh(lppaNominal)} ¢/кВт·год`,
-                lppaReal: `${toCentsPerKWh(lppaReal)} ¢/кВт·год`, npv: `$${formatInt(npv)}`, irr: `${(irr * 100).toFixed(2)}%`, paybackYear: paybackYear,
-            };
+            updateDisplayUnits(); // Update units based on the switch state
 
             updateChart(inputsForCalc);
             document.getElementById('results').classList.remove('hidden');
             document.getElementById('exportBtn').classList.remove('hidden');
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
         });
+        
+        document.getElementById('unitToggle').addEventListener('change', updateDisplayUnits);
 
         function updateChart(inputs) {
             const ctx = document.getElementById('dailyProfileChart').getContext('2d');
             const labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
             const energyToDischargeMWh = inputs.capacityMWh * inputs.dod;
             const energyToChargeMWh = energyToDischargeMWh / inputs.rte;
-            const dischargeDuration = 4, chargeDuration = 4;
+            const dischargeDuration = inputs.capacityMWh / inputs.powerMW;
+            const chargeDuration = dischargeDuration;
             const dischargePower = Math.min(inputs.powerMW, energyToDischargeMWh / dischargeDuration);
             const chargePower = Math.min(inputs.powerMW, energyToChargeMWh / chargeDuration);
             const chargeData = Array(24).fill(0), dischargeData = Array(24).fill(0);
-            for(let i=2; i<6; i++) chargeData[i] = chargePower;
-            for(let i=18; i<22; i++) dischargeData[i] = -dischargePower;
+            
+            const chargeStartHour = 2;
+            const dischargeStartHour = 18;
+
+            for(let i = chargeStartHour; i < chargeStartHour + Math.ceil(chargeDuration); i++) {
+                if (i < chargeStartHour + Math.floor(chargeDuration)) {
+                     chargeData[i] = chargePower;
+                } else {
+                     chargeData[i] = chargePower * (chargeDuration - Math.floor(chargeDuration));
+                }
+            }
+            for(let i = dischargeStartHour; i < dischargeStartHour + Math.ceil(dischargeDuration); i++) {
+                if (i < dischargeStartHour + Math.floor(dischargeDuration)) {
+                    dischargeData[i] = -dischargePower;
+                } else {
+                    dischargeData[i] = -dischargePower * (dischargeDuration - Math.floor(dischargeDuration));
+                }
+            }
+
             if (dailyChart) dailyChart.destroy();
             dailyChart = new Chart(ctx, {
                 type: 'bar',
@@ -480,7 +500,12 @@
         }
 
         document.getElementById('exportBtn').addEventListener('click', () => {
-            if (!lastInputs || !lastResults) { alert("Будь ласка, спочатку виконайте розрахунок."); return; }
+            if (!lastInputs || !lastRawResults.lcoeNominal) { alert("Будь ласка, спочатку виконайте розрахунок."); return; }
+            
+            const useMwh = document.getElementById('unitToggle').checked;
+            const unitLabel = useMwh ? '$/МВт·год' : '¢/кВт·год';
+            const formatValue = (value) => useMwh ? value.toFixed(2) : (value / 10).toFixed(2);
+            
             const inputsData = [
                 { "Параметр": "Тип батареї", "Значення": lastInputs.batteryType }, { "Параметр": "Потужність системи (МВт)", "Значення": lastInputs.powerMW },
                 { "Параметр": "Ємність системи (МВт·год)", "Значення": lastInputs.capacityMWh }, { "Параметр": "ККД повного циклу (%)", "Значення": lastInputs.rte },
@@ -494,12 +519,17 @@
             ];
             const inputs_ws = XLSX.utils.json_to_sheet(inputsData);
             const resultsData = [
-                { "Метрика": "Чисті капітальні витрати", "Значення": lastResults.netCapitalCost }, { "Метрика": "ККД повного циклу", "Значення": lastResults.rte },
-                { "Метрика": "Зарядка від мережі (Рік 1)", "Значення": lastResults.energyChargedY1 }, { "Метрика": "LCOE (номінальний)", "Значення": lastResults.lcoeNominal },
-                { "Метрика": "LCOE (реальний)", "Значення": lastResults.lcoeReal }, { "Метрика": "Ціна PPA (Рік 1)", "Значення": lastResults.ppaY1 },
-                { "Метрика": "LPPA (номінальний)", "Значення": lastResults.lppaNominal }, { "Метрика": "LPPA (реальний)", "Значення": lastResults.lppaReal },
-                { "Метрика": "Чиста приведена вартість (NPV)", "Значення": lastResults.npv }, { "Метрика": "Внутрішня норма дохідності (IRR)", "Значення": lastResults.irr },
-                { "Метрика": "Рік досягнення IRR (окупність)", "Значення": lastResults.paybackYear },
+                { "Метрика": "Чисті капітальні витрати", "Значення": document.getElementById('resNetCapitalCost').textContent }, 
+                { "Метрика": "ККД повного циклу", "Значення": document.getElementById('resRte').textContent },
+                { "Метрика": "Зарядка від мережі (Рік 1)", "Значення": document.getElementById('resEnergyChargedY1').textContent }, 
+                { "Метрика": `LCOE (номінальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lcoeNominal) },
+                { "Метрика": `LCOE (реальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lcoeReal) }, 
+                { "Метрика": `Ціна PPA (Рік 1), ${unitLabel}`, "Значення": formatValue(lastInputs.ppaPrice) },
+                { "Метрика": `LPPA (номінальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lppaNominal) }, 
+                { "Метрика": `LPPA (реальний), ${unitLabel}`, "Значення": formatValue(lastRawResults.lppaReal) },
+                { "Метрика": "Чиста приведена вартість (NPV)", "Значення": document.getElementById('resNpv').textContent }, 
+                { "Метрика": "Внутрішня норма дохідності (IRR)", "Значення": document.getElementById('resIrr').textContent },
+                { "Метрика": "Рік досягнення IRR (окупність)", "Значення": document.getElementById('resPaybackYear').textContent },
             ];
             const results_ws = XLSX.utils.json_to_sheet(resultsData);
             const wb = XLSX.utils.book_new();
@@ -508,7 +538,6 @@
             XLSX.writeFile(wb, "BESS_Calculation_Results.xlsx");
         });
 
-        // --- Navigation Logic ---
         const menuToggle = document.getElementById('menu-toggle');
         const sideMenu = document.getElementById('side-menu');
         const navLinks = document.querySelectorAll('.nav-link');
@@ -533,6 +562,13 @@
                 sideMenu.classList.remove('open');
             });
         });
+
+        // Initialize with default values
+        window.onload = () => {
+             const event = new Event('change');
+             batteryTypeSelector.dispatchEvent(event);
+        }
     </script>
 </body>
 </html>
+
