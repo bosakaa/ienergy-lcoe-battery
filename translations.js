@@ -134,13 +134,12 @@ export const translations = {
         </div>`,
     contactsContent: `<p class="mb-2"><strong>Інститут загальної енергетики НАН України</strong></p>
         <p>Адреса: вул. Антоновича, 172, Київ, 03150, Україна</p>
-        <p>Телефон: (096) 852-04-95</p>
         <p>Email: bosak_av@nas.gov.ua</p>`
     },
     en: {
         appTitle: "Levelized Cost of Energy (LCOE) Calculator for Battery Energy Storage Systems (BESS)",
         appHeader: "Levelized Cost of Energy (LCOE) Calculator for BESS",
-        instituteName: "Institute of General Energy of NAS of Ukraine",
+        instituteName: "General Energy Institute of NAS of Ukraine",
         menu: "Menu",
         calculator: "Calculator",
         formulas: "Formulas",
@@ -270,9 +269,8 @@ export const translations = {
             <p class="formula-title">Discounted Payback Period</p>
             <p class="formula-explanation">The year in which the cumulative discounted value of net cash flows (revenues minus costs) first becomes positive.</p>
         </div>`,
-        contactsContent: `<p class="mb-2"><strong>Institute of General Energy of NAS of Ukraine</strong></p>
+        contactsContent: `<p class="mb-2"><strong>General Energy Institute of NAS of Ukraine</strong></p>
             <p>Address: 172 Antonovycha St, Kyiv, 03150, Ukraine</p>
-            <p>Phone: (096) 852-04-95</p>
             <p>Email: bosak_av@nas.gov.ua</p>`
     }
 };
